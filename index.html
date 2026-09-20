@@ -17,14 +17,14 @@
       <span id="header-title" class="font-black tracking-wider text-sm uppercase text-slate-300">SERVICIO ACTIVO</span>
     </div>
     <div class="text-right">
-      <span id="val-exp" class="text-xs text-slate-400 font-mono block">EXP. ---</span>
-      <span id="val-poliza" class="text-xs font-bold text-amber-500 font-mono block">PÓLIZA: ---</span>
+      <span id="val-exp" class="text-lg text-slate-400 font-mono block">EXP. ---</span>
+      <span id="val-poliza" class="text-xl font-black text-amber-500 font-mono block">PÓLIZA: ---</span>
     </div>
   </header>
 
   <main class="max-w-md mx-auto p-4 space-y-4">
 
-    <!-- TARJETA VEHÍCULO -->
+    <!-- TARJETA VEHÍCULO Y AVERÍA -->
     <section class="bg-slate-900 border-2 border-slate-700 rounded-2xl p-4 shadow-xl">
       <div class="flex justify-between items-start">
         <div>
@@ -41,7 +41,7 @@
       </div>
     </section>
 
-    <!-- ACCIONES RÁPIDAS -->
+    <!-- CONTACTO CLIENTE -->
     <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-lg">
       <div class="flex justify-between items-baseline">
         <span class="text-xs font-semibold text-slate-400 uppercase">Contacto</span>
@@ -59,27 +59,27 @@
       </div>
     </section>
 
-    <!-- NAVEGACIÓN -->
+    <!-- NAVEGACIÓN 1: RECOGIDA -->
     <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-lg">
       <div class="flex items-start space-x-3">
-        <i class="fa-solid fa-location-dot text-rose-500 text-lg mt-1"></i>
+        <i class="fa-solid fa-location-arrow text-blue-500 text-lg mt-1"></i>
         <div>
-          <span class="text-xs font-semibold text-slate-400 uppercase">Destino / Entrega</span>
-          <p id="val-dir" class="text-base font-bold text-slate-100">Dirección</p>
-          <p id="val-pob" class="text-xs text-slate-400">Población</p>
+          <span class="text-xs font-semibold text-slate-400 uppercase">Punto de Recogida</span>
+          <p id="val-dir-rec" class="text-base font-bold text-slate-100">Dirección</p>
+          <p id="val-pob-rec" class="text-xs text-slate-400">Población</p>
         </div>
       </div>
-      <a id="btn-maps" href="#" target="_blank" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md mt-2">
-        <i class="fa-solid fa-diamond-turn-right"></i>
-        <span>Ruta en Maps</span>
+      <a id="btn-maps-rec" href="#" target="_blank" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md mt-2">
+        <i class="fa-solid fa-map-location-dot"></i>
+        <span>Ruta a Recogida</span>
       </a>
     </section>
 
-    <!-- DOBLE CERROJO -->
-    <section class="bg-slate-900/90 border-2 border-dashed border-amber-500/50 rounded-2xl p-4 text-center space-y-4">
+    <!-- SECUENCIA DE CERROJOS Y ENTREGA -->
+    <section class="bg-slate-900/90 border-2 border-dashed border-amber-500/50 rounded-2xl p-4 space-y-4">
       
-      <!-- Paso 1: Recogida -->
-      <div>
+      <!-- Paso 1: Foto Recogida -->
+      <div class="text-center">
         <span class="inline-block bg-amber-500/10 text-amber-400 text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-amber-500/30 mb-2">
           1. Cerrojo Recogida
         </span>
@@ -89,10 +89,24 @@
         </button>
       </div>
 
-      <hr class="border-slate-700">
+      <!-- Navegación 2: Entrega (Bloqueado al inicio) -->
+      <div id="panel-ruta-entrega" class="opacity-40 transition-opacity duration-300 pointer-events-none border-t border-b border-slate-700 py-4 my-2">
+        <div class="flex items-start space-x-3 mb-3">
+          <i class="fa-solid fa-flag-checkered text-rose-500 text-lg mt-1"></i>
+          <div>
+            <span class="text-xs font-semibold text-slate-400 uppercase">Destino / Taller</span>
+            <p id="val-dir-ent" class="text-base font-bold text-slate-100">Dirección</p>
+            <p id="val-pob-ent" class="text-xs text-slate-400">Población</p>
+          </div>
+        </div>
+        <a id="btn-maps-ent" href="#" target="_blank" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md">
+          <i class="fa-solid fa-diamond-turn-right"></i>
+          <span>Ruta a Destino</span>
+        </a>
+      </div>
 
-      <!-- Paso 2: Entrega -->
-      <div id="panel-entrega" class="opacity-40 transition-opacity duration-300 pointer-events-none">
+      <!-- Paso 2: Foto Entrega (Bloqueado al inicio) -->
+      <div id="panel-entrega" class="opacity-40 transition-opacity duration-300 pointer-events-none text-center">
         <span class="inline-block bg-rose-500/10 text-rose-400 text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-rose-500/30 mb-2">
           2. Cerrojo Descarga
         </span>
@@ -112,10 +126,10 @@
   </main>
 
   <script>
-    // Lógica de URL
     document.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
       if (params.toString() !== "") {
+        // Datos generales
         if(params.get('exp')) document.getElementById('val-exp').innerText = 'EXP. ' + params.get('exp');
         if(params.get('poliza')) document.getElementById('val-poliza').innerText = 'PÓLIZA: ' + params.get('poliza');
         if(params.get('cliente')) document.getElementById('val-cliente').innerText = params.get('cliente');
@@ -124,9 +138,19 @@
         if(params.get('averia')) document.getElementById('val-averia').innerText = params.get('averia');
         if(params.get('notas')) document.getElementById('val-notas').innerText = params.get('notas');
         if(params.get('contacto')) document.getElementById('val-contacto').innerText = params.get('contacto');
-        if(params.get('dir')) document.getElementById('val-dir').innerText = params.get('dir');
-        if(params.get('pob')) document.getElementById('val-pob').innerText = params.get('pob');
+        
+        // Direcciones Recogida y Entrega
+        const dirRec = params.get('dir_rec') || '---';
+        const pobRec = params.get('pob_rec') || '';
+        const dirEnt = params.get('dir_ent') || '---';
+        const pobEnt = params.get('pob_ent') || '';
 
+        document.getElementById('val-dir-rec').innerText = dirRec;
+        document.getElementById('val-pob-rec').innerText = pobRec;
+        document.getElementById('val-dir-ent').innerText = dirEnt;
+        document.getElementById('val-pob-ent').innerText = pobEnt;
+
+        // Botones contacto
         const pTel = params.get('tel');
         if(pTel) {
           document.getElementById('btn-llamar').href = 'tel:' + pTel;
@@ -134,46 +158,48 @@
           document.getElementById('btn-whatsapp').href = `https://wa.me/34${pTel}?text=${waText}`;
         }
 
-        const mapsQuery = encodeURIComponent(`${params.get('dir') || ''} ${params.get('pob') || ''}`);
-        document.getElementById('btn-maps').href = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
+        // Botones Maps independientes
+        const mapsQueryRec = encodeURIComponent(`${dirRec} ${pobRec}`);
+        document.getElementById('btn-maps-rec').href = `https://www.google.com/maps/search/?api=1&query=${mapsQueryRec}`;
+
+        const mapsQueryEnt = encodeURIComponent(`${dirEnt} ${pobEnt}`);
+        document.getElementById('btn-maps-ent').href = `https://www.google.com/maps/search/?api=1&query=${mapsQueryEnt}`;
       }
     });
 
-    // Lógica del Doble Cerrojo
+    // Lógica del Flujo de Trabajo
     const btnRecogida = document.getElementById('btn-foto-recogida');
+    const panelRutaEntrega = document.getElementById('panel-ruta-entrega');
     const panelEntrega = document.getElementById('panel-entrega');
     const btnEntrega = document.getElementById('btn-foto-entrega');
     const btnFinalizar = document.getElementById('btn-finalizar');
     
-    // Al hacer click en Recogida
+    // Al hacer foto de Recogida
     btnRecogida.addEventListener('click', () => {
-      // Cabecera roja
       document.getElementById('header-banner').classList.replace('bg-slate-900', 'bg-rose-900');
       document.getElementById('header-banner').classList.replace('border-slate-800', 'border-rose-700');
       document.getElementById('header-title').innerText = "VEHÍCULO EN PLATAFORMA";
       document.getElementById('header-title').classList.replace('text-slate-300', 'text-white');
       
-      // Botón recogida completado
       document.getElementById('txt-btn-recogida').innerText = "Cargado ✓";
       btnRecogida.classList.replace('bg-slate-800', 'bg-emerald-700');
       btnRecogida.classList.replace('border-slate-600', 'border-emerald-600');
 
-      // Desbloquear Entrega
+      // ¡Magia! Se desbloquea la ruta al taller y la foto de entrega
+      panelRutaEntrega.classList.remove('opacity-40', 'pointer-events-none');
       panelEntrega.classList.remove('opacity-40', 'pointer-events-none');
     });
 
-    // Al hacer click en Entrega
+    // Al hacer foto de Entrega
     btnEntrega.addEventListener('click', () => {
-      // Botón entrega completado
       document.getElementById('txt-btn-entrega').innerText = "Descargado ✓";
       btnEntrega.classList.replace('bg-slate-800', 'bg-emerald-700');
       btnEntrega.classList.replace('border-slate-600', 'border-emerald-600');
 
-      // Cabecera vuelve a la normalidad (opcional)
       document.getElementById('header-banner').classList.replace('bg-rose-900', 'bg-emerald-900');
       document.getElementById('header-title').innerText = "ENTREGA REALIZADA";
 
-      // Desbloquear Finalizar Servicio
+      // Se desbloquea Finalizar
       btnFinalizar.classList.remove('bg-emerald-600/30', 'text-white/40', 'cursor-not-allowed', 'pointer-events-none');
       btnFinalizar.classList.add('bg-emerald-600', 'text-white');
       document.getElementById('txt-btn-finalizar').innerText = "FINALIZAR SERVICIO";
