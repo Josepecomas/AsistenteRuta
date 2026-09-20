@@ -4,25 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Asistencia Grúa - Modo Cabina</title>
-  
-  <!-- Configuración PWA -->
-  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0f172a">
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2554/2554978.png">
-
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen pb-12 select-none">
 
-  <!-- CABECERA -->
-  <header class="bg-slate-900 border-b border-slate-800 px-4 py-3 sticky top-0 z-50 flex items-center justify-between">
+  <!-- CABECERA DINÁMICA -->
+  <header id="header-banner" class="bg-slate-900 border-b border-slate-800 px-4 py-3 sticky top-0 z-50 flex items-center justify-between transition-colors duration-500">
     <div class="flex items-center space-x-2">
       <span class="inline-block w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
-      <span class="font-black tracking-wider text-sm uppercase text-slate-300">SERVICIO ACTIVO</span>
+      <span id="header-title" class="font-black tracking-wider text-sm uppercase text-slate-300">SERVICIO ACTIVO</span>
     </div>
     <div class="text-right">
-      <span id="val-exp" class="text-xs text-slate-400 font-mono">EXP. PENDIENTE</span>
+      <span id="val-exp" class="text-xs text-slate-400 font-mono block">EXP. ---</span>
+      <span id="val-poliza" class="text-xs font-bold text-amber-500 font-mono block">PÓLIZA: ---</span>
     </div>
   </header>
 
@@ -39,24 +35,23 @@
           ---
         </div>
       </div>
-      <div class="mt-3 pt-3 border-t border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+      <div class="mt-3 pt-3 border-t border-slate-800 text-xs text-slate-400 flex flex-col space-y-1">
         <span>Avería / Tipo: <b id="val-averia" class="text-slate-200">Asistencia</b></span>
+        <span class="text-rose-400 font-bold text-xs uppercase" id="val-notas"></span>
       </div>
     </section>
 
     <!-- ACCIONES RÁPIDAS -->
     <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-lg">
       <div class="flex justify-between items-baseline">
-        <span class="text-xs font-semibold text-slate-400 uppercase">Contacto Destino</span>
+        <span class="text-xs font-semibold text-slate-400 uppercase">Contacto</span>
         <span id="val-contacto" class="text-base font-bold text-slate-200">Conductor</span>
       </div>
-
       <div class="grid grid-cols-2 gap-3 pt-1">
         <a id="btn-llamar" href="#" class="bg-emerald-600 active:bg-emerald-700 text-white font-bold py-3.5 px-3 rounded-xl flex items-center justify-center space-x-2 text-base shadow-md">
           <i class="fa-solid fa-phone text-lg"></i>
           <span>Llamar</span>
         </a>
-
         <a id="btn-whatsapp" href="#" target="_blank" class="bg-emerald-500 active:bg-emerald-600 text-slate-950 font-black py-3.5 px-3 rounded-xl flex items-center justify-center space-x-2 text-base shadow-md">
           <i class="fa-brands fa-whatsapp text-xl"></i>
           <span>Aviso 15 min</span>
@@ -74,81 +69,115 @@
           <p id="val-pob" class="text-xs text-slate-400">Población</p>
         </div>
       </div>
-
       <a id="btn-maps" href="#" target="_blank" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md mt-2">
         <i class="fa-solid fa-diamond-turn-right"></i>
-        <span>Abrir en Google Maps</span>
+        <span>Ruta en Maps</span>
       </a>
     </section>
 
-    <!-- CERROJO -->
-    <section class="bg-slate-900/90 border-2 border-dashed border-amber-500/50 rounded-2xl p-4 text-center space-y-2">
-      <span class="inline-block bg-amber-500/10 text-amber-400 text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-amber-500/30">
-        Cerrojo Activo
-      </span>
-      <p class="text-xs text-slate-300">Foto de coche cargado y matrícula antes de cerrar</p>
+    <!-- DOBLE CERROJO -->
+    <section class="bg-slate-900/90 border-2 border-dashed border-amber-500/50 rounded-2xl p-4 text-center space-y-4">
       
-      <button class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-xl flex items-center justify-center space-x-2">
-        <i class="fa-solid fa-camera text-slate-300"></i>
-        <span>Hacer foto de comprobación</span>
-      </button>
+      <!-- Paso 1: Recogida -->
+      <div>
+        <span class="inline-block bg-amber-500/10 text-amber-400 text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-amber-500/30 mb-2">
+          1. Cerrojo Recogida
+        </span>
+        <button id="btn-foto-recogida" class="w-full bg-slate-800 active:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-xl flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-camera text-slate-300"></i>
+          <span id="txt-btn-recogida">Foto coche cargado</span>
+        </button>
+      </div>
+
+      <hr class="border-slate-700">
+
+      <!-- Paso 2: Entrega -->
+      <div id="panel-entrega" class="opacity-40 transition-opacity duration-300 pointer-events-none">
+        <span class="inline-block bg-rose-500/10 text-rose-400 text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-rose-500/30 mb-2">
+          2. Cerrojo Descarga
+        </span>
+        <button id="btn-foto-entrega" class="w-full bg-slate-800 active:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-xl flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-camera text-slate-300"></i>
+          <span id="txt-btn-entrega">Foto entrega taller</span>
+        </button>
+      </div>
     </section>
 
     <!-- FINALIZAR -->
-    <button class="w-full bg-emerald-600 active:bg-emerald-700 text-white font-black text-lg py-4 rounded-2xl shadow-xl flex items-center justify-center space-x-2 uppercase tracking-wide">
-      <i class="fa-solid fa-check-double"></i>
-      <span>Finalizar Servicio</span>
+    <button id="btn-finalizar" class="w-full bg-emerald-600/30 text-white/40 font-black text-lg py-4 rounded-2xl shadow-xl flex items-center justify-center space-x-2 uppercase tracking-wide cursor-not-allowed pointer-events-none transition-all duration-300">
+      <i class="fa-solid fa-lock"></i>
+      <span id="txt-btn-finalizar">Bloqueado</span>
     </button>
 
   </main>
 
   <script>
-    // Registro del Service Worker para habilitar la descarga como App
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js')
-        .then(() => console.log('PWA Service Worker registrado con éxito'))
-        .catch((err) => console.error('Fallo en Service Worker:', err));
-    }
-
-    // Lógica para atrapar los parámetros de la URL y rellenar la aplicación
+    // Lógica de URL
     document.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
-      
       if (params.toString() !== "") {
-        // Extraer los datos (con valores por defecto por si falla algo)
-        const pExp = params.get('exp') || '';
-        const pCliente = params.get('cliente') || '';
-        const pCoche = params.get('coche') || '';
-        const pMatricula = params.get('matricula') || 'S/N';
-        const pAveria = params.get('averia') || '';
-        const pContacto = params.get('contacto') || 'Cliente';
-        const pTel = params.get('tel') || '';
-        const pDir = params.get('dir') || '';
-        const pPob = params.get('pob') || '';
+        if(params.get('exp')) document.getElementById('val-exp').innerText = 'EXP. ' + params.get('exp');
+        if(params.get('poliza')) document.getElementById('val-poliza').innerText = 'PÓLIZA: ' + params.get('poliza');
+        if(params.get('cliente')) document.getElementById('val-cliente').innerText = params.get('cliente');
+        if(params.get('coche')) document.getElementById('val-coche').innerText = params.get('coche');
+        if(params.get('matricula')) document.getElementById('val-matricula').innerText = params.get('matricula');
+        if(params.get('averia')) document.getElementById('val-averia').innerText = params.get('averia');
+        if(params.get('notas')) document.getElementById('val-notas').innerText = params.get('notas');
+        if(params.get('contacto')) document.getElementById('val-contacto').innerText = params.get('contacto');
+        if(params.get('dir')) document.getElementById('val-dir').innerText = params.get('dir');
+        if(params.get('pob')) document.getElementById('val-pob').innerText = params.get('pob');
 
-        // Inyectar el texto en la pantalla
-        if(pExp) document.getElementById('val-exp').innerText = 'EXP. ' + pExp;
-        if(pCliente) document.getElementById('val-cliente').innerText = pCliente;
-        if(pCoche) document.getElementById('val-coche').innerText = pCoche;
-        document.getElementById('val-matricula').innerText = pMatricula;
-        if(pAveria) document.getElementById('val-averia').innerText = pAveria;
-        document.getElementById('val-contacto').innerText = pContacto;
-        if(pDir) document.getElementById('val-dir').innerText = pDir;
-        if(pPob) document.getElementById('val-pob').innerText = pPob;
-
-        // Construir los enlaces de los botones de acción
+        const pTel = params.get('tel');
         if(pTel) {
           document.getElementById('btn-llamar').href = 'tel:' + pTel;
-          
-          // Mensaje automático para WhatsApp
-          const waText = encodeURIComponent(`Hola ${pContacto}, soy de la grúa. Llego a la dirección en aproximadamente 15 minutos. Un saludo.`);
+          const waText = encodeURIComponent(`Hola ${params.get('contacto') || ''}, soy de la grúa. Llego a la dirección en unos minutos.`);
           document.getElementById('btn-whatsapp').href = `https://wa.me/34${pTel}?text=${waText}`;
         }
 
-        // Enlace de Google Maps
-        const mapsQuery = encodeURIComponent(`${pDir} ${pPob}`);
+        const mapsQuery = encodeURIComponent(`${params.get('dir') || ''} ${params.get('pob') || ''}`);
         document.getElementById('btn-maps').href = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
       }
+    });
+
+    // Lógica del Doble Cerrojo
+    const btnRecogida = document.getElementById('btn-foto-recogida');
+    const panelEntrega = document.getElementById('panel-entrega');
+    const btnEntrega = document.getElementById('btn-foto-entrega');
+    const btnFinalizar = document.getElementById('btn-finalizar');
+    
+    // Al hacer click en Recogida
+    btnRecogida.addEventListener('click', () => {
+      // Cabecera roja
+      document.getElementById('header-banner').classList.replace('bg-slate-900', 'bg-rose-900');
+      document.getElementById('header-banner').classList.replace('border-slate-800', 'border-rose-700');
+      document.getElementById('header-title').innerText = "VEHÍCULO EN PLATAFORMA";
+      document.getElementById('header-title').classList.replace('text-slate-300', 'text-white');
+      
+      // Botón recogida completado
+      document.getElementById('txt-btn-recogida').innerText = "Cargado ✓";
+      btnRecogida.classList.replace('bg-slate-800', 'bg-emerald-700');
+      btnRecogida.classList.replace('border-slate-600', 'border-emerald-600');
+
+      // Desbloquear Entrega
+      panelEntrega.classList.remove('opacity-40', 'pointer-events-none');
+    });
+
+    // Al hacer click en Entrega
+    btnEntrega.addEventListener('click', () => {
+      // Botón entrega completado
+      document.getElementById('txt-btn-entrega').innerText = "Descargado ✓";
+      btnEntrega.classList.replace('bg-slate-800', 'bg-emerald-700');
+      btnEntrega.classList.replace('border-slate-600', 'border-emerald-600');
+
+      // Cabecera vuelve a la normalidad (opcional)
+      document.getElementById('header-banner').classList.replace('bg-rose-900', 'bg-emerald-900');
+      document.getElementById('header-title').innerText = "ENTREGA REALIZADA";
+
+      // Desbloquear Finalizar Servicio
+      btnFinalizar.classList.remove('bg-emerald-600/30', 'text-white/40', 'cursor-not-allowed', 'pointer-events-none');
+      btnFinalizar.classList.add('bg-emerald-600', 'text-white');
+      document.getElementById('txt-btn-finalizar').innerText = "FINALIZAR SERVICIO";
+      document.querySelector('#btn-finalizar i').classList.replace('fa-lock', 'fa-check-double');
     });
   </script>
 </body>
