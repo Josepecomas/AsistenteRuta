@@ -130,6 +130,7 @@
   </main>
 
   <script>
+    <script>
     document.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
       if (params.toString() !== "") {
@@ -152,7 +153,6 @@
         document.getElementById('val-dir-ent').innerText = dirEnt;
         document.getElementById('val-pob-ent').innerText = pobEnt;
 
-        // Contacto directo
         const pTel = params.get('tel');
         if(pTel) {
           document.getElementById('btn-llamar').href = 'tel:' + pTel;
@@ -160,7 +160,6 @@
           document.getElementById('btn-whatsapp').href = `https://wa.me/34${pTel}?text=${waText}`;
         }
 
-        // Navegación: Prioriza coordenadas GPS si existen
         const coordsRec = params.get('coords_rec');
         const queryRec = coordsRec ? coordsRec : `${dirRec} ${pobRec}`;
         document.getElementById('btn-maps-rec').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryRec)}`;
@@ -171,7 +170,6 @@
       }
     });
 
-    // Elementos de cerrojos y cámara
     const btnRecogida = document.getElementById('btn-foto-recogida');
     const inputCamRecogida = document.getElementById('input-cam-recogida');
     const panelRutaEntrega = document.getElementById('panel-ruta-entrega');
@@ -180,47 +178,50 @@
     const inputCamEntrega = document.getElementById('input-cam-entrega');
     const btnFinalizar = document.getElementById('btn-finalizar');
 
-    // 1. Cerrojo de Recogida
+    // Función que desbloquea siempre la entrega sin depender de si la cámara falla
+    function desbloquearRecogida() {
+      document.getElementById('header-banner').classList.replace('bg-slate-900', 'bg-rose-900');
+      document.getElementById('header-banner').classList.replace('border-slate-800', 'border-rose-700');
+      document.getElementById('header-title').innerText = "VEHÍCULO EN PLATAFORMA";
+      document.getElementById('header-title').classList.replace('text-slate-300', 'text-white');
+      
+      document.getElementById('txt-btn-recogida').innerText = "Cargado ✓";
+      btnRecogida.classList.replace('bg-slate-800', 'bg-emerald-700');
+      btnRecogida.classList.replace('border-slate-600', 'border-emerald-600');
+
+      panelRutaEntrega.classList.remove('opacity-40', 'pointer-events-none');
+      panelEntrega.classList.remove('opacity-40', 'pointer-events-none');
+    }
+
     btnRecogida.addEventListener('click', () => {
       inputCamRecogida.click();
+      desbloquearRecogida();
     });
 
-    inputCamRecogida.addEventListener('change', () => {
-      if (inputCamRecogida.files && inputCamRecogida.files[0]) {
-        document.getElementById('header-banner').classList.replace('bg-slate-900', 'bg-rose-900');
-        document.getElementById('header-banner').classList.replace('border-slate-800', 'border-rose-700');
-        document.getElementById('header-title').innerText = "VEHÍCULO EN PLATAFORMA";
-        document.getElementById('header-title').classList.replace('text-slate-300', 'text-white');
-        
-        document.getElementById('txt-btn-recogida').innerText = "Cargado ✓";
-        btnRecogida.classList.replace('bg-slate-800', 'bg-emerald-700');
-        btnRecogida.classList.replace('border-slate-600', 'border-emerald-600');
+    inputCamRecogida.addEventListener('change', desbloquearRecogida);
 
-        panelRutaEntrega.classList.remove('opacity-40', 'pointer-events-none');
-        panelEntrega.classList.remove('opacity-40', 'pointer-events-none');
-      }
-    });
+    // Función que desbloquea la finalización del servicio
+    function desbloquearEntrega() {
+      document.getElementById('txt-btn-entrega').innerText = "Descargado ✓";
+      btnEntrega.classList.replace('bg-slate-800', 'bg-emerald-700');
+      btnEntrega.classList.replace('border-slate-600', 'border-emerald-600');
 
-    // 2. Cerrojo de Entrega
+      document.getElementById('header-banner').classList.replace('bg-rose-900', 'bg-emerald-900');
+      document.getElementById('header-title').innerText = "ENTREGA REALIZADA";
+
+      btnFinalizar.classList.remove('bg-emerald-600/30', 'text-white/40', 'cursor-not-allowed', 'pointer-events-none');
+      btnFinalizar.classList.add('bg-emerald-600', 'text-white');
+      document.getElementById('txt-btn-finalizar').innerText = "FINALIZAR SERVICIO";
+      document.querySelector('#btn-finalizar i').classList.replace('fa-lock', 'fa-check-double');
+    }
+
     btnEntrega.addEventListener('click', () => {
       inputCamEntrega.click();
+      desbloquearEntrega();
     });
 
-    inputCamEntrega.addEventListener('change', () => {
-      if (inputCamEntrega.files && inputCamEntrega.files[0]) {
-        document.getElementById('txt-btn-entrega').innerText = "Descargado ✓";
-        btnEntrega.classList.replace('bg-slate-800', 'bg-emerald-700');
-        btnEntrega.classList.replace('border-slate-600', 'border-emerald-600');
-
-        document.getElementById('header-banner').classList.replace('bg-rose-900', 'bg-emerald-900');
-        document.getElementById('header-title').innerText = "ENTREGA REALIZADA";
-
-        btnFinalizar.classList.remove('bg-emerald-600/30', 'text-white/40', 'cursor-not-allowed', 'pointer-events-none');
-        btnFinalizar.classList.add('bg-emerald-600', 'text-white');
-        document.getElementById('txt-btn-finalizar').innerText = "FINALIZAR SERVICIO";
-        document.querySelector('#btn-finalizar i').classList.replace('fa-lock', 'fa-check-double');
-      }
-    });
+    inputCamEntrega.addEventListener('change', desbloquearEntrega);
+  </script>
   </script>
 </body>
 </html>
