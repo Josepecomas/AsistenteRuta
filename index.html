@@ -237,11 +237,53 @@
         inputCamEntrega.addEventListener('change', desbloquearEntrega);
       }
 
+     // Reemplaza TU_URL_DE_APPS_SCRIPT por la URL que copiaste en el paso 1
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxWp_TfA4XnyWFj3DqSJtvWfq2vBYYAzZWuHUhXOe-TEswejPtaahp4peVPa7CgMEro/exec";
+
       if (btnFinalizar) {
         btnFinalizar.addEventListener('click', () => {
-          if (!btnFinalizar.classList.contains('pointer-events-none')) {
-            alert('¡Servicio completado con éxito!');
-          }
+          if (btnFinalizar.classList.contains('pointer-events-none')) return;
+
+          btnFinalizar.innerText = "ENVIANDO DATOS...";
+          btnFinalizar.classList.add('opacity-75');
+
+          const ahora = new Date();
+          const fechaHoraActual = ahora.toLocaleDateString('es-ES') + ' ' + ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+          const datosServicio = {
+            fechaHora: fechaHoraActual,
+            expediente: document.getElementById('val-exp').innerText.replace('EXP. ', ''),
+            poliza: document.getElementById('val-poliza').innerText.replace('PÓLIZA: ', ''),
+            cliente: document.getElementById('val-cliente').innerText,
+            vehiculo: document.getElementById('val-coche').innerText,
+            matricula: document.getElementById('val-matricula').innerText,
+            averia: document.getElementById('val-averia').innerText,
+            notas: document.getElementById('val-notas').innerText,
+            contacto: document.getElementById('val-contacto').innerText,
+            telefono: document.getElementById('btn-llamar').href.replace('tel:', ''),
+            recogida: document.getElementById('val-dir-rec').innerText + ' (' + document.getElementById('val-pob-rec').innerText + ')',
+            entrega: document.getElementById('val-dir-ent').innerText + ' (' + document.getElementById('val-pob-ent').innerText + ')'
+          };
+
+          fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datosServicio)
+          })
+          .then(() => {
+            alert('¡Servicio registrado con éxito en tu Google Sheet!');
+            btnFinalizar.innerText = "REGISTRADO ✓";
+            btnFinalizar.classList.replace('bg-emerald-600', 'bg-slate-700');
+            btnFinalizar.classList.add('pointer-events-none');
+          })
+          .catch((error) => {
+            alert('Error al guardar: ' + error);
+            btnFinalizar.innerText = "FINALIZAR SERVICIO";
+            btnFinalizar.classList.remove('opacity-75');
+          });
+        });
+      }
         });
       }
     });
