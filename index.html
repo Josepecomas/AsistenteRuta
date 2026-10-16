@@ -83,6 +83,8 @@
         <span class="inline-block bg-amber-500/10 text-amber-400 text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-amber-500/30 mb-2">
           1. Cerrojo Recogida
         </span>
+        <!-- Input nativo de cámara oculto -->
+        <input type="file" id="input-cam-recogida" accept="image/*" capture="environment" class="hidden">
         <button id="btn-foto-recogida" class="w-full bg-slate-800 active:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-xl flex items-center justify-center space-x-2">
           <i class="fa-solid fa-camera text-slate-300"></i>
           <span id="txt-btn-recogida">Foto coche cargado</span>
@@ -110,6 +112,8 @@
         <span class="inline-block bg-rose-500/10 text-rose-400 text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-rose-500/30 mb-2">
           2. Cerrojo Descarga
         </span>
+        <!-- Input nativo de cámara oculto -->
+        <input type="file" id="input-cam-entrega" accept="image/*" capture="environment" class="hidden">
         <button id="btn-foto-entrega" class="w-full bg-slate-800 active:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-xl flex items-center justify-center space-x-2">
           <i class="fa-solid fa-camera text-slate-300"></i>
           <span id="txt-btn-entrega">Foto entrega taller</span>
@@ -129,7 +133,6 @@
     document.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
       if (params.toString() !== "") {
-        // Datos generales
         if(params.get('exp')) document.getElementById('val-exp').innerText = 'EXP. ' + params.get('exp');
         if(params.get('poliza')) document.getElementById('val-poliza').innerText = 'PÓLIZA: ' + params.get('poliza');
         if(params.get('cliente')) document.getElementById('val-cliente').innerText = params.get('cliente');
@@ -139,7 +142,6 @@
         if(params.get('notas')) document.getElementById('val-notas').innerText = params.get('notas');
         if(params.get('contacto')) document.getElementById('val-contacto').innerText = params.get('contacto');
         
-        // Direcciones Recogida y Entrega
         const dirRec = params.get('dir_rec') || '---';
         const pobRec = params.get('pob_rec') || '';
         const dirEnt = params.get('dir_ent') || '---';
@@ -150,7 +152,7 @@
         document.getElementById('val-dir-ent').innerText = dirEnt;
         document.getElementById('val-pob-ent').innerText = pobEnt;
 
-        // Botones contacto
+        // Contacto directo
         const pTel = params.get('tel');
         if(pTel) {
           document.getElementById('btn-llamar').href = 'tel:' + pTel;
@@ -158,52 +160,66 @@
           document.getElementById('btn-whatsapp').href = `https://wa.me/34${pTel}?text=${waText}`;
         }
 
-        // Botones Maps independientes
-        const mapsQueryRec = encodeURIComponent(`${dirRec} ${pobRec}`);
-        document.getElementById('btn-maps-rec').href = `https://www.google.com/maps/search/?api=1&query=${mapsQueryRec}`;
+        // Navegación: Prioriza coordenadas GPS si existen
+        const coordsRec = params.get('coords_rec');
+        const queryRec = coordsRec ? coordsRec : `${dirRec} ${pobRec}`;
+        document.getElementById('btn-maps-rec').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryRec)}`;
 
-        const mapsQueryEnt = encodeURIComponent(`${dirEnt} ${pobEnt}`);
-        document.getElementById('btn-maps-ent').href = `https://www.google.com/maps/search/?api=1&query=${mapsQueryEnt}`;
+        const coordsEnt = params.get('coords_ent');
+        const queryEnt = coordsEnt ? coordsEnt : `${dirEnt} ${pobEnt}`;
+        document.getElementById('btn-maps-ent').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryEnt)}`;
       }
     });
 
-    // Lógica del Flujo de Trabajo
+    // Elementos de cerrojos y cámara
     const btnRecogida = document.getElementById('btn-foto-recogida');
+    const inputCamRecogida = document.getElementById('input-cam-recogida');
     const panelRutaEntrega = document.getElementById('panel-ruta-entrega');
     const panelEntrega = document.getElementById('panel-entrega');
     const btnEntrega = document.getElementById('btn-foto-entrega');
+    const inputCamEntrega = document.getElementById('input-cam-entrega');
     const btnFinalizar = document.getElementById('btn-finalizar');
-    
-    // Al hacer foto de Recogida
-    btnRecogida.addEventListener('click', () => {
-      document.getElementById('header-banner').classList.replace('bg-slate-900', 'bg-rose-900');
-      document.getElementById('header-banner').classList.replace('border-slate-800', 'border-rose-700');
-      document.getElementById('header-title').innerText = "VEHÍCULO EN PLATAFORMA";
-      document.getElementById('header-title').classList.replace('text-slate-300', 'text-white');
-      
-      document.getElementById('txt-btn-recogida').innerText = "Cargado ✓";
-      btnRecogida.classList.replace('bg-slate-800', 'bg-emerald-700');
-      btnRecogida.classList.replace('border-slate-600', 'border-emerald-600');
 
-      // ¡Magia! Se desbloquea la ruta al taller y la foto de entrega
-      panelRutaEntrega.classList.remove('opacity-40', 'pointer-events-none');
-      panelEntrega.classList.remove('opacity-40', 'pointer-events-none');
+    // 1. Cerrojo de Recogida
+    btnRecogida.addEventListener('click', () => {
+      inputCamRecogida.click();
     });
 
-    // Al hacer foto de Entrega
+    inputCamRecogida.addEventListener('change', () => {
+      if (inputCamRecogida.files && inputCamRecogida.files[0]) {
+        document.getElementById('header-banner').classList.replace('bg-slate-900', 'bg-rose-900');
+        document.getElementById('header-banner').classList.replace('border-slate-800', 'border-rose-700');
+        document.getElementById('header-title').innerText = "VEHÍCULO EN PLATAFORMA";
+        document.getElementById('header-title').classList.replace('text-slate-300', 'text-white');
+        
+        document.getElementById('txt-btn-recogida').innerText = "Cargado ✓";
+        btnRecogida.classList.replace('bg-slate-800', 'bg-emerald-700');
+        btnRecogida.classList.replace('border-slate-600', 'border-emerald-600');
+
+        panelRutaEntrega.classList.remove('opacity-40', 'pointer-events-none');
+        panelEntrega.classList.remove('opacity-40', 'pointer-events-none');
+      }
+    });
+
+    // 2. Cerrojo de Entrega
     btnEntrega.addEventListener('click', () => {
-      document.getElementById('txt-btn-entrega').innerText = "Descargado ✓";
-      btnEntrega.classList.replace('bg-slate-800', 'bg-emerald-700');
-      btnEntrega.classList.replace('border-slate-600', 'border-emerald-600');
+      inputCamEntrega.click();
+    });
 
-      document.getElementById('header-banner').classList.replace('bg-rose-900', 'bg-emerald-900');
-      document.getElementById('header-title').innerText = "ENTREGA REALIZADA";
+    inputCamEntrega.addEventListener('change', () => {
+      if (inputCamEntrega.files && inputCamEntrega.files[0]) {
+        document.getElementById('txt-btn-entrega').innerText = "Descargado ✓";
+        btnEntrega.classList.replace('bg-slate-800', 'bg-emerald-700');
+        btnEntrega.classList.replace('border-slate-600', 'border-emerald-600');
 
-      // Se desbloquea Finalizar
-      btnFinalizar.classList.remove('bg-emerald-600/30', 'text-white/40', 'cursor-not-allowed', 'pointer-events-none');
-      btnFinalizar.classList.add('bg-emerald-600', 'text-white');
-      document.getElementById('txt-btn-finalizar').innerText = "FINALIZAR SERVICIO";
-      document.querySelector('#btn-finalizar i').classList.replace('fa-lock', 'fa-check-double');
+        document.getElementById('header-banner').classList.replace('bg-rose-900', 'bg-emerald-900');
+        document.getElementById('header-title').innerText = "ENTREGA REALIZADA";
+
+        btnFinalizar.classList.remove('bg-emerald-600/30', 'text-white/40', 'cursor-not-allowed', 'pointer-events-none');
+        btnFinalizar.classList.add('bg-emerald-600', 'text-white');
+        document.getElementById('txt-btn-finalizar').innerText = "FINALIZAR SERVICIO";
+        document.querySelector('#btn-finalizar i').classList.replace('fa-lock', 'fa-check-double');
+      }
     });
   </script>
 </body>
