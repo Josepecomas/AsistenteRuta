@@ -83,9 +83,8 @@
         <span class="inline-block bg-amber-500/10 text-amber-400 text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-amber-500/30 mb-2">
           1. Cerrojo Recogida
         </span>
-        <!-- Input nativo de cámara oculto -->
         <input type="file" id="input-cam-recogida" accept="image/*" capture="environment" class="hidden">
-        <button id="btn-foto-recogida" class="w-full bg-slate-800 active:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-xl flex items-center justify-center space-x-2">
+        <button id="btn-foto-recogida" type="button" class="w-full bg-slate-800 active:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-xl flex items-center justify-center space-x-2">
           <i class="fa-solid fa-camera text-slate-300"></i>
           <span id="txt-btn-recogida">Foto coche cargado</span>
         </button>
@@ -112,9 +111,8 @@
         <span class="inline-block bg-rose-500/10 text-rose-400 text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-rose-500/30 mb-2">
           2. Cerrojo Descarga
         </span>
-        <!-- Input nativo de cámara oculto -->
         <input type="file" id="input-cam-entrega" accept="image/*" capture="environment" class="hidden">
-        <button id="btn-foto-entrega" class="w-full bg-slate-800 active:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-xl flex items-center justify-center space-x-2">
+        <button id="btn-foto-entrega" type="button" class="w-full bg-slate-800 active:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-xl flex items-center justify-center space-x-2">
           <i class="fa-solid fa-camera text-slate-300"></i>
           <span id="txt-btn-entrega">Foto entrega taller</span>
         </button>
@@ -122,7 +120,7 @@
     </section>
 
     <!-- FINALIZAR -->
-    <button id="btn-finalizar" class="w-full bg-emerald-600/30 text-white/40 font-black text-lg py-4 rounded-2xl shadow-xl flex items-center justify-center space-x-2 uppercase tracking-wide cursor-not-allowed pointer-events-none transition-all duration-300">
+    <button id="btn-finalizar" type="button" class="w-full bg-emerald-600/30 text-white/40 font-black text-lg py-4 rounded-2xl shadow-xl flex items-center justify-center space-x-2 uppercase tracking-wide cursor-not-allowed pointer-events-none transition-all duration-300">
       <i class="fa-solid fa-lock"></i>
       <span id="txt-btn-finalizar">Bloqueado</span>
     </button>
@@ -130,18 +128,18 @@
   </main>
 
   <script>
-    <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // 1. Carga de datos desde la URL
       const params = new URLSearchParams(window.location.search);
       if (params.toString() !== "") {
-        if(params.get('exp')) document.getElementById('val-exp').innerText = 'EXP. ' + params.get('exp');
-        if(params.get('poliza')) document.getElementById('val-poliza').innerText = 'PÓLIZA: ' + params.get('poliza');
-        if(params.get('cliente')) document.getElementById('val-cliente').innerText = params.get('cliente');
-        if(params.get('coche')) document.getElementById('val-coche').innerText = params.get('coche');
-        if(params.get('matricula')) document.getElementById('val-matricula').innerText = params.get('matricula');
-        if(params.get('averia')) document.getElementById('val-averia').innerText = params.get('averia');
-        if(params.get('notas')) document.getElementById('val-notas').innerText = params.get('notas');
-        if(params.get('contacto')) document.getElementById('val-contacto').innerText = params.get('contacto');
+        if (params.get('exp')) document.getElementById('val-exp').innerText = 'EXP. ' + params.get('exp');
+        if (params.get('poliza')) document.getElementById('val-poliza').innerText = 'PÓLIZA: ' + params.get('poliza');
+        if (params.get('cliente')) document.getElementById('val-cliente').innerText = params.get('cliente');
+        if (params.get('coche')) document.getElementById('val-coche').innerText = params.get('coche');
+        if (params.get('matricula')) document.getElementById('val-matricula').innerText = params.get('matricula');
+        if (params.get('averia')) document.getElementById('val-averia').innerText = params.get('averia');
+        if (params.get('notas')) document.getElementById('val-notas').innerText = params.get('notas');
+        if (params.get('contacto')) document.getElementById('val-contacto').innerText = params.get('contacto');
         
         const dirRec = params.get('dir_rec') || '---';
         const pobRec = params.get('pob_rec') || '';
@@ -154,7 +152,7 @@
         document.getElementById('val-pob-ent').innerText = pobEnt;
 
         const pTel = params.get('tel');
-        if(pTel) {
+        if (pTel) {
           document.getElementById('btn-llamar').href = 'tel:' + pTel;
           const waText = encodeURIComponent(`Hola ${params.get('contacto') || ''}, soy de la grúa. Llego a la dirección en unos minutos.`);
           document.getElementById('btn-whatsapp').href = `https://wa.me/34${pTel}?text=${waText}`;
@@ -168,60 +166,85 @@
         const queryEnt = coordsEnt ? coordsEnt : `${dirEnt} ${pobEnt}`;
         document.getElementById('btn-maps-ent').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryEnt)}`;
       }
+
+      // 2. Control de Cerrojos con comprobación segura
+      const btnRecogida = document.getElementById('btn-foto-recogida');
+      const inputCamRecogida = document.getElementById('input-cam-recogida');
+      const panelRutaEntrega = document.getElementById('panel-ruta-entrega');
+      const panelEntrega = document.getElementById('panel-entrega');
+      const btnEntrega = document.getElementById('btn-foto-entrega');
+      const inputCamEntrega = document.getElementById('input-cam-entrega');
+      const btnFinalizar = document.getElementById('btn-finalizar');
+
+      function desbloquearRecogida() {
+        const header = document.getElementById('header-banner');
+        header.classList.remove('bg-slate-900', 'border-slate-800');
+        header.classList.add('bg-rose-900', 'border-rose-700');
+
+        const title = document.getElementById('header-title');
+        title.innerText = "VEHÍCULO EN PLATAFORMA";
+        title.classList.remove('text-slate-300');
+        title.classList.add('text-white');
+
+        document.getElementById('txt-btn-recogida').innerText = "Cargado ✓";
+        btnRecogida.classList.remove('bg-slate-800', 'border-slate-600');
+        btnRecogida.classList.add('bg-emerald-700', 'border-emerald-600');
+
+        panelRutaEntrega.classList.remove('opacity-40', 'pointer-events-none');
+        panelEntrega.classList.remove('opacity-40', 'pointer-events-none');
+      }
+
+      if (btnRecogida) {
+        btnRecogida.addEventListener('click', () => {
+          if (inputCamRecogida) inputCamRecogida.click();
+          desbloquearRecogida();
+        });
+      }
+
+      if (inputCamRecogida) {
+        inputCamRecogida.addEventListener('change', desbloquearRecogida);
+      }
+
+      function desbloquearEntrega() {
+        document.getElementById('txt-btn-entrega').innerText = "Descargado ✓";
+        btnEntrega.classList.remove('bg-slate-800', 'border-slate-600');
+        btnEntrega.classList.add('bg-emerald-700', 'border-emerald-600');
+
+        const header = document.getElementById('header-banner');
+        header.classList.remove('bg-rose-900', 'border-rose-700');
+        header.classList.add('bg-emerald-900', 'border-emerald-800');
+        document.getElementById('header-title').innerText = "ENTREGA REALIZADA";
+
+        btnFinalizar.classList.remove('bg-emerald-600/30', 'text-white/40', 'cursor-not-allowed', 'pointer-events-none');
+        btnFinalizar.classList.add('bg-emerald-600', 'text-white', 'cursor-pointer');
+        document.getElementById('txt-btn-finalizar').innerText = "FINALIZAR SERVICIO";
+        
+        const iconLock = btnFinalizar.querySelector('i');
+        if (iconLock) {
+          iconLock.classList.remove('fa-lock');
+          iconLock.classList.add('fa-check-double');
+        }
+      }
+
+      if (btnEntrega) {
+        btnEntrega.addEventListener('click', () => {
+          if (inputCamEntrega) inputCamEntrega.click();
+          desbloquearEntrega();
+        });
+      }
+
+      if (inputCamEntrega) {
+        inputCamEntrega.addEventListener('change', desbloquearEntrega);
+      }
+
+      if (btnFinalizar) {
+        btnFinalizar.addEventListener('click', () => {
+          if (!btnFinalizar.classList.contains('pointer-events-none')) {
+            alert('¡Servicio completado con éxito!');
+          }
+        });
+      }
     });
-
-    const btnRecogida = document.getElementById('btn-foto-recogida');
-    const inputCamRecogida = document.getElementById('input-cam-recogida');
-    const panelRutaEntrega = document.getElementById('panel-ruta-entrega');
-    const panelEntrega = document.getElementById('panel-entrega');
-    const btnEntrega = document.getElementById('btn-foto-entrega');
-    const inputCamEntrega = document.getElementById('input-cam-entrega');
-    const btnFinalizar = document.getElementById('btn-finalizar');
-
-    // Función que desbloquea siempre la entrega sin depender de si la cámara falla
-    function desbloquearRecogida() {
-      document.getElementById('header-banner').classList.replace('bg-slate-900', 'bg-rose-900');
-      document.getElementById('header-banner').classList.replace('border-slate-800', 'border-rose-700');
-      document.getElementById('header-title').innerText = "VEHÍCULO EN PLATAFORMA";
-      document.getElementById('header-title').classList.replace('text-slate-300', 'text-white');
-      
-      document.getElementById('txt-btn-recogida').innerText = "Cargado ✓";
-      btnRecogida.classList.replace('bg-slate-800', 'bg-emerald-700');
-      btnRecogida.classList.replace('border-slate-600', 'border-emerald-600');
-
-      panelRutaEntrega.classList.remove('opacity-40', 'pointer-events-none');
-      panelEntrega.classList.remove('opacity-40', 'pointer-events-none');
-    }
-
-    btnRecogida.addEventListener('click', () => {
-      inputCamRecogida.click();
-      desbloquearRecogida();
-    });
-
-    inputCamRecogida.addEventListener('change', desbloquearRecogida);
-
-    // Función que desbloquea la finalización del servicio
-    function desbloquearEntrega() {
-      document.getElementById('txt-btn-entrega').innerText = "Descargado ✓";
-      btnEntrega.classList.replace('bg-slate-800', 'bg-emerald-700');
-      btnEntrega.classList.replace('border-slate-600', 'border-emerald-600');
-
-      document.getElementById('header-banner').classList.replace('bg-rose-900', 'bg-emerald-900');
-      document.getElementById('header-title').innerText = "ENTREGA REALIZADA";
-
-      btnFinalizar.classList.remove('bg-emerald-600/30', 'text-white/40', 'cursor-not-allowed', 'pointer-events-none');
-      btnFinalizar.classList.add('bg-emerald-600', 'text-white');
-      document.getElementById('txt-btn-finalizar').innerText = "FINALIZAR SERVICIO";
-      document.querySelector('#btn-finalizar i').classList.replace('fa-lock', 'fa-check-double');
-    }
-
-    btnEntrega.addEventListener('click', () => {
-      inputCamEntrega.click();
-      desbloquearEntrega();
-    });
-
-    inputCamEntrega.addEventListener('change', desbloquearEntrega);
-  </script>
   </script>
 </body>
 </html>
