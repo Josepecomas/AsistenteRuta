@@ -239,14 +239,18 @@
         inputCamEntrega.addEventListener('change', desbloquearEntrega);
       }
 
-      // 3. Envío directo de datos a tu Google Sheet https://github.com/Josepecomas/AsistenteRuta/blob/main/index.html";
+      // 3. Envío directo de datos a tu Google Sheet
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw1IXGET3Q6ytpAlJzAcCL5PLRQYGwhOUoK3ZboMYbko-3bBVu5xtuc_9BwdEqffdm9/exec";
 
       if (btnFinalizar) {
         btnFinalizar.addEventListener('click', () => {
-          if (btnFinalizar.classList.contains('pointer-events-none')) return;
+          if (btnFinalizar.disabled || btnFinalizar.classList.contains('pointer-events-none')) return;
 
-          btnFinalizar.innerText = "ENVIANDO DATOS...";
-          btnFinalizar.classList.add('opacity-75');
+          // 1. Estado enviando: desactiva el botón y muestra animación
+          btnFinalizar.disabled = true;
+          btnFinalizar.classList.remove('bg-emerald-600', 'cursor-pointer');
+          btnFinalizar.classList.add('bg-amber-600', 'cursor-not-allowed', 'opacity-90');
+          btnFinalizar.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i><span>ENVIANDO A GOOGLE SHEETS...</span>';
 
           const ahora = new Date();
           const fechaHoraActual = ahora.toLocaleDateString('es-ES') + ' ' + ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
@@ -273,15 +277,17 @@
             body: JSON.stringify(datosServicio)
           })
           .then(() => {
-            alert('¡Servicio registrado con éxito en tu Google Sheet!');
-            btnFinalizar.innerText = "REGISTRADO ✓";
-            btnFinalizar.classList.replace('bg-emerald-600', 'bg-slate-700');
-            btnFinalizar.classList.add('pointer-events-none');
+            // 2. Estado guardado: botón sellado en verde con confirmación visual
+            btnFinalizar.classList.remove('bg-amber-600');
+            btnFinalizar.classList.add('bg-slate-900', 'border-2', 'border-emerald-500', 'text-emerald-400');
+            btnFinalizar.innerHTML = '<i class="fa-solid fa-check-double text-emerald-400 mr-2"></i><span>SERVICIO TERMINADO Y GUARDADO ✓</span>';
           })
           .catch((error) => {
-            alert('Error al guardar: ' + error);
-            btnFinalizar.innerText = "FINALIZAR SERVICIO";
-            btnFinalizar.classList.remove('opacity-75');
+            // 3. Si hay fallo de red o cobertura: permite reintentar sin perder los datos
+            btnFinalizar.disabled = false;
+            btnFinalizar.classList.remove('bg-amber-600', 'cursor-not-allowed', 'opacity-90');
+            btnFinalizar.classList.add('bg-rose-600', 'cursor-pointer');
+            btnFinalizar.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-2"></i><span>ERROR - TOCAR PARA REINTENTAR</span>';
           });
         });
       }
