@@ -240,12 +240,12 @@
       }
 
       // 3. Envío directo de datos a tu Google Sheet
-      const SCRIPT_URL = https://script.google.com/macros/s/AKfycbxUURn-YFf_9Q_jezEFhcjXniveTWT-pcU8aUpKTzEnln4PKlfaEd2v-292wkJGzjrU/exec
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUURn-YFf_9Q_jezEFhcjXniveTWT-pcU8aUpKTzEnln4PKlfaEd2v-292wkJGzjrU/exec";
+
       if (btnFinalizar) {
         btnFinalizar.addEventListener('click', () => {
           if (btnFinalizar.disabled || btnFinalizar.classList.contains('pointer-events-none')) return;
 
-          // 1. Estado enviando: desactiva el botón y muestra animación
           btnFinalizar.disabled = true;
           btnFinalizar.classList.remove('bg-emerald-600', 'cursor-pointer');
           btnFinalizar.classList.add('bg-amber-600', 'cursor-not-allowed', 'opacity-90');
@@ -276,13 +276,11 @@
             body: JSON.stringify(datosServicio)
           })
           .then(() => {
-            // 2. Estado guardado: botón sellado en verde con confirmación visual
             btnFinalizar.classList.remove('bg-amber-600');
             btnFinalizar.classList.add('bg-slate-900', 'border-2', 'border-emerald-500', 'text-emerald-400');
             btnFinalizar.innerHTML = '<i class="fa-solid fa-check-double text-emerald-400 mr-2"></i><span>SERVICIO TERMINADO Y GUARDADO ✓</span>';
           })
           .catch((error) => {
-            // 3. Si hay fallo de red o cobertura: permite reintentar sin perder los datos
             btnFinalizar.disabled = false;
             btnFinalizar.classList.remove('bg-amber-600', 'cursor-not-allowed', 'opacity-90');
             btnFinalizar.classList.add('bg-rose-600', 'cursor-pointer');
