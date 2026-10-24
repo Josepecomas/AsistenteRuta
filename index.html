@@ -10,7 +10,6 @@
   <!-- Iconos FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Estilos para evitar selecciones accidentales en cabina */
     body { -webkit-tap-highlight-color: transparent; }
   </style>
 </head>
@@ -23,7 +22,7 @@
       <span id="header-title" class="font-black tracking-wider text-xs sm:text-sm uppercase text-slate-300">SERVICIO ACTIVO</span>
     </div>
     <div class="flex items-center space-x-3">
-      <!-- Botón para ver el historial y recuento de la semana -->
+      <!-- Botón recuento semana -->
       <button id="btn-abrir-historial" type="button" class="bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 px-2.5 py-1 rounded-lg text-xs font-bold flex items-center space-x-1 shadow">
         <i class="fa-solid fa-list-check"></i>
         <span id="badge-contador-semana">Partes (0)</span>
@@ -61,12 +60,10 @@
         <span id="val-contacto" class="text-base font-bold text-slate-200">Conductor</span>
       </div>
       <div class="grid grid-cols-2 gap-3 pt-1">
-        <!-- Botón Llamar -->
         <a id="btn-llamar" href="#" class="bg-emerald-600 active:bg-emerald-700 text-white font-bold py-3.5 px-3 rounded-xl flex items-center justify-center space-x-2 text-base shadow-md transition-all">
           <i class="fa-solid fa-phone text-lg"></i>
           <span id="txt-btn-llamar">Llamar</span>
         </a>
-        <!-- Botón WhatsApp -->
         <a id="btn-whatsapp" href="#" target="_blank" class="bg-emerald-500 active:bg-emerald-600 text-slate-950 font-black py-3.5 px-3 rounded-xl flex items-center justify-center space-x-2 text-base shadow-md transition-all">
           <i class="fa-brands fa-whatsapp text-xl"></i>
           <span>Aviso 15 min</span>
@@ -84,7 +81,7 @@
           <p id="val-pob-rec" class="text-xs text-slate-400 mt-0.5">Población</p>
         </div>
       </div>
-      <a id="btn-maps-rec" href="#" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md mt-2">
+      <a id="btn-maps-rec" href="#" target="_blank" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md mt-2">
         <i class="fa-solid fa-map-location-dot"></i>
         <span>Ruta a Recogida</span>
       </a>
@@ -105,23 +102,30 @@
         </button>
       </div>
 
-      <!-- Navegación 2: Entrega (Bloqueado al inicio) -->
+      <!-- Navegación 2: Entrega (Editable en cabina) -->
       <div id="panel-ruta-entrega" class="opacity-40 transition-opacity duration-300 pointer-events-none border-t border-b border-slate-700 py-4 my-2">
         <div class="flex items-start space-x-3 mb-3">
           <i class="fa-solid fa-flag-checkered text-rose-500 text-lg mt-1"></i>
-          <div>
-            <span class="text-xs font-semibold text-slate-400 uppercase">Destino / Taller</span>
-            <p id="val-dir-ent" class="text-base font-bold text-slate-100 leading-snug">Dirección de entrega</p>
-            <p id="val-pob-ent" class="text-xs text-slate-400 mt-0.5">Población</p>
+          <div class="flex-1">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-semibold text-slate-400 uppercase">Destino / Taller</span>
+              <span class="text-[10px] text-amber-400 font-medium flex items-center">
+                <i class="fa-solid fa-pen-to-square mr-1"></i>Editable en cabina
+              </span>
+            </div>
+            <!-- Campo Dirección / Taller editable -->
+            <input type="text" id="val-dir-ent" class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500 text-slate-100 font-bold text-sm sm:text-base p-2.5 rounded-xl outline-none transition-colors" placeholder="Taller o dirección de destino">
+            <!-- Campo Población editable -->
+            <input type="text" id="val-pob-ent" class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500 text-slate-300 text-xs sm:text-sm p-2 rounded-xl mt-1.5 outline-none transition-colors" placeholder="Población / Localidad">
           </div>
         </div>
-        <a id="btn-maps-ent" href="#" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md">
+        <a id="btn-maps-ent" href="#" target="_blank" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md">
           <i class="fa-solid fa-diamond-turn-right"></i>
           <span>Ruta a Destino</span>
         </a>
       </div>
 
-      <!-- Paso 2: Foto Entrega (Bloqueado al inicio) -->
+      <!-- Paso 2: Foto Entrega -->
       <div id="panel-entrega" class="opacity-40 transition-opacity duration-300 pointer-events-none text-center">
         <span class="inline-block bg-rose-500/10 text-rose-400 text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-rose-500/30 mb-2">
           2. Cerrojo Descarga
@@ -151,16 +155,14 @@
             <i class="fa-solid fa-clipboard-list text-amber-400"></i>
             <span>Historial de Partes</span>
           </h3>
-          <p id="subtitulo-contador" class="text-xs text-slate-400">Cargando recuento...</p>
+          <p id="subtitulo-contador" class="text-xs text-slate-400">Cargando...</p>
         </div>
         <button id="btn-cerrar-historial" class="text-slate-400 hover:text-white text-xl p-1">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
       
-      <div id="lista-partes-historial" class="p-4 overflow-y-auto space-y-2.5 flex-1 text-sm">
-        <!-- Filas de partes generadas por JS -->
-      </div>
+      <div id="lista-partes-historial" class="p-4 overflow-y-auto space-y-2.5 flex-1 text-sm"></div>
 
       <div class="p-3 border-t border-slate-800 grid grid-cols-2 gap-2 bg-slate-900/90">
         <button id="btn-copiar-resumen" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center space-x-1.5 shadow">
@@ -180,7 +182,7 @@
       const STORAGE_KEY = 'asistente_ruta_partes_semana';
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUURn-YFf_9Q_jezEFhcjXniveTWT-pcU8aUpKTzEnln4PKlfaEd2v-292wkJGzjrU/exec";
 
-      // 1. Lectura robusta de parámetros de la URL
+      // 1. Lectura de parámetros de la URL
       const params = new URLSearchParams(window.location.search);
       const expediente = (params.get('exp') || '---').trim();
       const matricula = (params.get('matricula') || '---').trim().toUpperCase();
@@ -192,13 +194,15 @@
       const poliza = (params.get('poliza') || '---').trim();
       const dirRec = (params.get('dir_rec') || '---').trim();
       const pobRec = (params.get('pob_rec') || '').trim();
-      const dirEnt = (params.get('dir_ent') || '---').trim();
-      const pobEnt = (params.get('pob_ent') || '').trim();
+      const dirEntInicial = (params.get('dir_ent') || '').trim();
+      const pobEntInicial = (params.get('pob_ent') || '').trim();
       const coordsRec = (params.get('coords_rec') || '').trim();
       const coordsEnt = (params.get('coords_ent') || '').trim();
       const telRaw = (params.get('tel') || '').trim();
 
-      // Rellenar la interfaz si hay datos en la URL
+      const inputDirEnt = document.getElementById('val-dir-ent');
+      const inputPobEnt = document.getElementById('val-pob-ent');
+
       if (params.toString() !== "") {
         document.getElementById('val-exp').innerText = 'EXP. ' + expediente;
         document.getElementById('val-poliza').innerText = 'PÓLIZA: ' + poliza;
@@ -210,43 +214,51 @@
         document.getElementById('val-contacto').innerText = contacto;
         document.getElementById('val-dir-rec').innerText = dirRec;
         document.getElementById('val-pob-rec').innerText = pobRec;
-        document.getElementById('val-dir-ent').innerText = dirEnt;
-        document.getElementById('val-pob-ent').innerText = pobEnt;
 
-        // LLAMADA Y WHATSAPP (CORREGIDO DE RAÍZ)
+        // Cargar valores iniciales en los campos de entrega editables
+        inputDirEnt.value = dirEntInicial;
+        inputPobEnt.value = pobEntInicial;
+
+        // LLAMADA Y WHATSAPP LIMPIOS
         const btnLlamar = document.getElementById('btn-llamar');
         const btnWhatsapp = document.getElementById('btn-whatsapp');
 
         if (telRaw) {
-          // Limpiar caracteres no numéricos excepto el '+' inicial si existe
           const telFormateado = telRaw.replace(/[^\d+]/g, '');
           btnLlamar.href = 'tel:' + telFormateado;
           document.getElementById('txt-btn-llamar').innerText = 'Llamar';
 
-          // Para WhatsApp: SOLO dígitos y con código de país 34 sin duplicar
           let telDigitos = telRaw.replace(/\D/g, '');
           if (telDigitos.startsWith('34') && telDigitos.length > 9) {
-            // Ya incluye el prefijo 34
+            // Ya tiene prefijo
           } else if (telDigitos.length === 9) {
             telDigitos = '34' + telDigitos;
           }
           const textoWa = encodeURIComponent(`Hola ${contacto}, soy de la grúa. Llego a la dirección en unos minutos.`);
           btnWhatsapp.href = `https://wa.me/${telDigitos}?text=${textoWa}`;
         } else {
-          // Si no hay teléfono registrado en la ficha
           btnLlamar.classList.add('opacity-40', 'pointer-events-none');
           document.getElementById('txt-btn-llamar').innerText = 'Sin tel.';
           btnWhatsapp.classList.add('opacity-40', 'pointer-events-none');
         }
 
-        // NAVEGACIÓN GPS (Murcia / Google Maps)
+        // GPS Recogida
         const queryRec = coordsRec ? coordsRec : `${dirRec}, ${pobRec}`;
         document.getElementById('btn-maps-rec').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryRec)}`;
 
-        const queryEnt = coordsEnt ? coordsEnt : `${dirEnt}, ${pobEnt}`;
-        document.getElementById('btn-maps-ent').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryEnt)}`;
+        // GPS Entrega Dinámico
+        function actualizarGpsEntrega() {
+          const d = inputDirEnt.value.trim();
+          const p = inputPobEnt.value.trim();
+          const queryFinal = (coordsEnt && !d) ? coordsEnt : `${d}, ${p}`.trim();
+          document.getElementById('btn-maps-ent').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryFinal || 'Murcia')}`;
+        }
 
-        // Guardar automáticamente el parte en el historial local si tiene expediente
+        inputDirEnt.addEventListener('input', actualizarGpsEntrega);
+        inputPobEnt.addEventListener('input', actualizarGpsEntrega);
+        actualizarGpsEntrega();
+
+        // Guardado inicial en el historial local
         if (expediente !== '---') {
           guardarParteEnHistorial({
             expediente,
@@ -255,7 +267,7 @@
             cliente,
             contacto,
             recogida: `${dirRec} (${pobRec})`,
-            entrega: `${dirEnt} (${pobEnt})`,
+            entrega: `${dirEntInicial} (${pobEntInicial})`,
             estado: 'Pendiente',
             fecha: new Date().toLocaleDateString('es-ES'),
             hora: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
@@ -320,7 +332,7 @@
           iconLock.classList.add('fa-check-double');
         }
 
-        actualizarEstadoParte(expediente, 'Descargado');
+        actualizarEstadoParte(expediente, 'Descargado', `${inputDirEnt.value.trim()} (${inputPobEnt.value.trim()})`);
       }
 
       if (btnEntrega) {
@@ -331,7 +343,7 @@
       }
       if (inputCamEntrega) inputCamEntrega.addEventListener('change', desbloquearEntrega);
 
-      // 3. Envío directo a Google Sheets y guardado final
+      // 3. Envío directo a Google Sheets con la dirección final editada
       if (btnFinalizar) {
         btnFinalizar.addEventListener('click', () => {
           if (btnFinalizar.disabled || btnFinalizar.classList.contains('pointer-events-none')) return;
@@ -343,6 +355,8 @@
 
           const ahora = new Date();
           const fechaHoraActual = ahora.toLocaleDateString('es-ES') + ' ' + ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+          const entregaFinal = `${inputDirEnt.value.trim()} (${inputPobEnt.value.trim()})`;
 
           const datosServicio = {
             fechaHora: fechaHoraActual,
@@ -356,7 +370,7 @@
             contacto: contacto,
             telefono: telRaw,
             recogida: `${dirRec} (${pobRec})`,
-            entrega: `${dirEnt} (${pobEnt})`
+            entrega: entregaFinal
           };
 
           fetch(SCRIPT_URL, {
@@ -369,7 +383,7 @@
             btnFinalizar.classList.remove('bg-amber-600');
             btnFinalizar.classList.add('bg-slate-900', 'border-2', 'border-emerald-500', 'text-emerald-400');
             btnFinalizar.innerHTML = '<i class="fa-solid fa-check-double text-emerald-400 mr-2"></i><span>SERVICIO GUARDADO CON ÉXITO ✓</span>';
-            actualizarEstadoParte(expediente, 'Finalizado');
+            actualizarEstadoParte(expediente, 'Finalizado', entregaFinal);
           })
           .catch((error) => {
             btnFinalizar.disabled = false;
@@ -380,7 +394,7 @@
         });
       }
 
-      // 4. Funciones de Historial Local (localStorage)
+      // 4. Historial Local (localStorage)
       function obtenerHistorial() {
         try {
           return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
@@ -393,23 +407,22 @@
         let lista = obtenerHistorial();
         const index = lista.findIndex(p => p.expediente === nuevoParte.expediente && p.expediente !== '---');
         if (index >= 0) {
-          // Si ya existe, actualizamos los datos sin duplicar
           lista[index] = { ...lista[index], ...nuevoParte };
         } else {
           lista.unshift(nuevoParte);
         }
-        // Guardar hasta 150 registros
         if (lista.length > 150) lista = lista.slice(0, 150);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
         actualizarContadorBadge();
       }
 
-      function actualizarEstadoParte(numExp, estado) {
+      function actualizarEstadoParte(numExp, estado, entregaActualizada = null) {
         if (!numExp || numExp === '---') return;
         let lista = obtenerHistorial();
         const index = lista.findIndex(p => p.expediente === numExp);
         if (index >= 0) {
           lista[index].estado = estado;
+          if (entregaActualizada) lista[index].entrega = entregaActualizada;
           localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
           actualizarContadorBadge();
         }
@@ -421,7 +434,7 @@
         if (badge) badge.innerText = `Partes (${lista.length})`;
       }
 
-      // 5. Modal de Historial y Copia de Resumen
+      // 5. Modal Historial
       const modalHistorial = document.getElementById('modal-historial');
       const btnAbrirHistorial = document.getElementById('btn-abrir-historial');
       const btnCerrarHistorial = document.getElementById('btn-cerrar-historial');
@@ -449,7 +462,7 @@
                 <span class="text-[10px] text-slate-400">${p.fecha} ${p.hora || ''}</span>
               </div>
               <p class="text-xs font-semibold text-slate-200 truncate mt-0.5">${p.coche}</p>
-              <p class="text-[11px] text-slate-400 truncate">Exp: ${p.expediente}</p>
+              <p class="text-[11px] text-slate-400 truncate">Destino: ${p.entrega || '---'}</p>
             </div>
             <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${colorEstado} uppercase shrink-0">${p.estado}</span>
           `;
@@ -472,7 +485,6 @@
         });
       }
 
-      // Copiar resumen de la semana al portapapeles
       const btnCopiarResumen = document.getElementById('btn-copiar-resumen');
       if (btnCopiarResumen) {
         btnCopiarResumen.addEventListener('click', () => {
@@ -483,7 +495,7 @@
           }
           let texto = `📋 RESUMEN DE SERVICIOS REALIZADOS (${lista.length}):\n\n`;
           lista.forEach((p, i) => {
-            texto += `${i + 1}. [${p.fecha}] ${p.matricula} - ${p.coche} | Exp: ${p.expediente} | Estado: ${p.estado}\n`;
+            texto += `${i + 1}. [${p.fecha}] ${p.matricula} - ${p.coche} | Destino: ${p.entrega} | Exp: ${p.expediente} (${p.estado})\n`;
           });
           navigator.clipboard.writeText(texto).then(() => {
             btnCopiarResumen.innerHTML = '<i class="fa-solid fa-check"></i><span>¡Copiado!</span>';
@@ -494,7 +506,6 @@
         });
       }
 
-      // Borrar historial si se desea reiniciar semana
       const btnLimpiar = document.getElementById('btn-limpiar-historial');
       if (btnLimpiar) {
         btnLimpiar.addEventListener('click', () => {
