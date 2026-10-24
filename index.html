@@ -2,23 +2,36 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asistencia Grúa - Modo Cabina</title>
-  <meta name="theme-color" content="#0f172a">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Asistente de Ruta - Modo Cabina</title>
+  <meta name="theme-color" content="#020617">
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Iconos FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Estilos para evitar selecciones accidentales en cabina */
+    body { -webkit-tap-highlight-color: transparent; }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen pb-12 select-none">
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen pb-16 select-none">
 
   <!-- CABECERA DINÁMICA -->
-  <header id="header-banner" class="bg-slate-900 border-b border-slate-800 px-4 py-3 sticky top-0 z-50 flex items-center justify-between transition-colors duration-500">
+  <header id="header-banner" class="bg-slate-900 border-b border-slate-800 px-4 py-3 sticky top-0 z-40 flex items-center justify-between transition-colors duration-500 shadow-md">
     <div class="flex items-center space-x-2">
       <span class="inline-block w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
-      <span id="header-title" class="font-black tracking-wider text-sm uppercase text-slate-300">SERVICIO ACTIVO</span>
+      <span id="header-title" class="font-black tracking-wider text-xs sm:text-sm uppercase text-slate-300">SERVICIO ACTIVO</span>
     </div>
-    <div class="text-right">
-      <span id="val-exp" class="text-lg text-slate-400 font-mono block">EXP. ---</span>
-      <span id="val-poliza" class="text-xl font-black text-amber-500 font-mono block">PÓLIZA: ---</span>
+    <div class="flex items-center space-x-3">
+      <!-- Botón para ver el historial y recuento de la semana -->
+      <button id="btn-abrir-historial" type="button" class="bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 px-2.5 py-1 rounded-lg text-xs font-bold flex items-center space-x-1 shadow">
+        <i class="fa-solid fa-list-check"></i>
+        <span id="badge-contador-semana">Partes (0)</span>
+      </button>
+      <div class="text-right">
+        <span id="val-exp" class="text-sm sm:text-base text-slate-400 font-mono block">EXP. ---</span>
+        <span id="val-poliza" class="text-xs text-amber-500 font-mono block">PÓLIZA: ---</span>
+      </div>
     </div>
   </header>
 
@@ -27,16 +40,16 @@
     <!-- TARJETA VEHÍCULO Y AVERÍA -->
     <section class="bg-slate-900 border-2 border-slate-700 rounded-2xl p-4 shadow-xl">
       <div class="flex justify-between items-start">
-        <div>
-          <span id="val-cliente" class="text-xs font-bold text-amber-400 uppercase tracking-widest">CLIENTE/COMPAÑÍA</span>
-          <h2 id="val-coche" class="text-xl font-black text-white mt-0.5">VEHÍCULO</h2>
+        <div class="pr-2">
+          <span id="val-cliente" class="text-[11px] font-bold text-amber-400 uppercase tracking-widest block">CLIENTE/COMPAÑÍA</span>
+          <h2 id="val-coche" class="text-xl font-black text-white mt-0.5 leading-tight">VEHÍCULO</h2>
         </div>
-        <div id="val-matricula" class="bg-white text-black font-mono font-black text-lg px-3 py-1 rounded border-2 border-slate-400 shadow-inner tracking-wider">
+        <div id="val-matricula" class="bg-white text-black font-mono font-black text-lg px-3 py-1 rounded border-2 border-slate-400 shadow-inner tracking-wider whitespace-nowrap">
           ---
         </div>
       </div>
-      <div class="mt-3 pt-3 border-t border-slate-800 text-xs text-slate-400 flex flex-col space-y-1">
-        <span>Avería / Tipo: <b id="val-averia" class="text-slate-200">Asistencia</b></span>
+      <div class="mt-3 pt-3 border-t border-slate-800 text-xs text-slate-400 flex flex-col space-y-1.5">
+        <span>Avería: <b id="val-averia" class="text-slate-200">Asistencia general</b></span>
         <span class="text-rose-400 font-bold text-xs uppercase" id="val-notas"></span>
       </div>
     </section>
@@ -48,11 +61,13 @@
         <span id="val-contacto" class="text-base font-bold text-slate-200">Conductor</span>
       </div>
       <div class="grid grid-cols-2 gap-3 pt-1">
-        <a id="btn-llamar" href="#" class="bg-emerald-600 active:bg-emerald-700 text-white font-bold py-3.5 px-3 rounded-xl flex items-center justify-center space-x-2 text-base shadow-md">
+        <!-- Botón Llamar -->
+        <a id="btn-llamar" href="#" class="bg-emerald-600 active:bg-emerald-700 text-white font-bold py-3.5 px-3 rounded-xl flex items-center justify-center space-x-2 text-base shadow-md transition-all">
           <i class="fa-solid fa-phone text-lg"></i>
-          <span>Llamar</span>
+          <span id="txt-btn-llamar">Llamar</span>
         </a>
-        <a id="btn-whatsapp" href="#" target="_blank" class="bg-emerald-500 active:bg-emerald-600 text-slate-950 font-black py-3.5 px-3 rounded-xl flex items-center justify-center space-x-2 text-base shadow-md">
+        <!-- Botón WhatsApp -->
+        <a id="btn-whatsapp" href="#" target="_blank" class="bg-emerald-500 active:bg-emerald-600 text-slate-950 font-black py-3.5 px-3 rounded-xl flex items-center justify-center space-x-2 text-base shadow-md transition-all">
           <i class="fa-brands fa-whatsapp text-xl"></i>
           <span>Aviso 15 min</span>
         </a>
@@ -65,11 +80,11 @@
         <i class="fa-solid fa-location-arrow text-blue-500 text-lg mt-1"></i>
         <div>
           <span class="text-xs font-semibold text-slate-400 uppercase">Punto de Recogida</span>
-          <p id="val-dir-rec" class="text-base font-bold text-slate-100">Dirección</p>
-          <p id="val-pob-rec" class="text-xs text-slate-400">Población</p>
+          <p id="val-dir-rec" class="text-base font-bold text-slate-100 leading-snug">Dirección de recogida</p>
+          <p id="val-pob-rec" class="text-xs text-slate-400 mt-0.5">Población</p>
         </div>
       </div>
-      <a id="btn-maps-rec" href="#" target="_blank" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md mt-2">
+      <a id="btn-maps-rec" href="#" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md mt-2">
         <i class="fa-solid fa-map-location-dot"></i>
         <span>Ruta a Recogida</span>
       </a>
@@ -84,7 +99,7 @@
           1. Cerrojo Recogida
         </span>
         <input type="file" id="input-cam-recogida" accept="image/*" capture="environment" class="hidden">
-        <button id="btn-foto-recogida" type="button" class="w-full bg-slate-800 active:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-xl flex items-center justify-center space-x-2">
+        <button id="btn-foto-recogida" type="button" class="w-full bg-slate-800 active:bg-slate-700 border border-slate-600 text-white font-bold py-3.5 rounded-xl flex items-center justify-center space-x-2 transition-all">
           <i class="fa-solid fa-camera text-slate-300"></i>
           <span id="txt-btn-recogida">Foto coche cargado</span>
         </button>
@@ -96,11 +111,11 @@
           <i class="fa-solid fa-flag-checkered text-rose-500 text-lg mt-1"></i>
           <div>
             <span class="text-xs font-semibold text-slate-400 uppercase">Destino / Taller</span>
-            <p id="val-dir-ent" class="text-base font-bold text-slate-100">Dirección</p>
-            <p id="val-pob-ent" class="text-xs text-slate-400">Población</p>
+            <p id="val-dir-ent" class="text-base font-bold text-slate-100 leading-snug">Dirección de entrega</p>
+            <p id="val-pob-ent" class="text-xs text-slate-400 mt-0.5">Población</p>
           </div>
         </div>
-        <a id="btn-maps-ent" href="#" target="_blank" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md">
+        <a id="btn-maps-ent" href="#" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md">
           <i class="fa-solid fa-diamond-turn-right"></i>
           <span>Ruta a Destino</span>
         </a>
@@ -112,14 +127,14 @@
           2. Cerrojo Descarga
         </span>
         <input type="file" id="input-cam-entrega" accept="image/*" capture="environment" class="hidden">
-        <button id="btn-foto-entrega" type="button" class="w-full bg-slate-800 active:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-xl flex items-center justify-center space-x-2">
+        <button id="btn-foto-entrega" type="button" class="w-full bg-slate-800 active:bg-slate-700 border border-slate-600 text-white font-bold py-3.5 rounded-xl flex items-center justify-center space-x-2 transition-all">
           <i class="fa-solid fa-camera text-slate-300"></i>
           <span id="txt-btn-entrega">Foto entrega taller</span>
         </button>
       </div>
     </section>
 
-    <!-- FINALIZAR -->
+    <!-- BOTÓN FINALIZAR -->
     <button id="btn-finalizar" type="button" class="w-full bg-emerald-600/30 text-white/40 font-black text-lg py-4 rounded-2xl shadow-xl flex items-center justify-center space-x-2 uppercase tracking-wide cursor-not-allowed pointer-events-none transition-all duration-300">
       <i class="fa-solid fa-lock"></i>
       <span id="txt-btn-finalizar">Bloqueado</span>
@@ -127,46 +142,125 @@
 
   </main>
 
+  <!-- MODAL HISTORIAL DE LA SEMANA -->
+  <div id="modal-historial" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-t-2xl sm:rounded-2xl max-h-[85vh] flex flex-col shadow-2xl">
+      <div class="p-4 border-b border-slate-800 flex justify-between items-center">
+        <div>
+          <h3 class="font-black text-white text-base flex items-center space-x-2">
+            <i class="fa-solid fa-clipboard-list text-amber-400"></i>
+            <span>Historial de Partes</span>
+          </h3>
+          <p id="subtitulo-contador" class="text-xs text-slate-400">Cargando recuento...</p>
+        </div>
+        <button id="btn-cerrar-historial" class="text-slate-400 hover:text-white text-xl p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      
+      <div id="lista-partes-historial" class="p-4 overflow-y-auto space-y-2.5 flex-1 text-sm">
+        <!-- Filas de partes generadas por JS -->
+      </div>
+
+      <div class="p-3 border-t border-slate-800 grid grid-cols-2 gap-2 bg-slate-900/90">
+        <button id="btn-copiar-resumen" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center space-x-1.5 shadow">
+          <i class="fa-solid fa-copy"></i>
+          <span>Copiar Resumen</span>
+        </button>
+        <button id="btn-limpiar-historial" class="bg-slate-800 hover:bg-rose-900/60 text-slate-300 hover:text-rose-200 border border-slate-700 font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center space-x-1.5 shadow">
+          <i class="fa-solid fa-trash-can"></i>
+          <span>Borrar Antiguos</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. Carga de parámetros desde la URL
-      const params = new URLSearchParams(window.location.search);
-      if (params.toString() !== "") {
-        if (params.get('exp')) document.getElementById('val-exp').innerText = 'EXP. ' + params.get('exp');
-        if (params.get('poliza')) document.getElementById('val-poliza').innerText = 'PÓLIZA: ' + params.get('poliza');
-        if (params.get('cliente')) document.getElementById('val-cliente').innerText = params.get('cliente');
-        if (params.get('coche')) document.getElementById('val-coche').innerText = params.get('coche');
-        if (params.get('matricula')) document.getElementById('val-matricula').innerText = params.get('matricula');
-        if (params.get('averia')) document.getElementById('val-averia').innerText = params.get('averia');
-        if (params.get('notas')) document.getElementById('val-notas').innerText = params.get('notas');
-        if (params.get('contacto')) document.getElementById('val-contacto').innerText = params.get('contacto');
-        
-        const dirRec = params.get('dir_rec') || '---';
-        const pobRec = params.get('pob_rec') || '';
-        const dirEnt = params.get('dir_ent') || '---';
-        const pobEnt = params.get('pob_ent') || '';
+      const STORAGE_KEY = 'asistente_ruta_partes_semana';
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUURn-YFf_9Q_jezEFhcjXniveTWT-pcU8aUpKTzEnln4PKlfaEd2v-292wkJGzjrU/exec";
 
+      // 1. Lectura robusta de parámetros de la URL
+      const params = new URLSearchParams(window.location.search);
+      const expediente = (params.get('exp') || '---').trim();
+      const matricula = (params.get('matricula') || '---').trim().toUpperCase();
+      const coche = (params.get('coche') || 'VEHÍCULO').trim();
+      const cliente = (params.get('cliente') || 'ASISTENCIA').trim();
+      const averia = (params.get('averia') || 'Asistencia').trim();
+      const notas = (params.get('notas') || '').trim();
+      const contacto = (params.get('contacto') || 'Conductor').trim();
+      const poliza = (params.get('poliza') || '---').trim();
+      const dirRec = (params.get('dir_rec') || '---').trim();
+      const pobRec = (params.get('pob_rec') || '').trim();
+      const dirEnt = (params.get('dir_ent') || '---').trim();
+      const pobEnt = (params.get('pob_ent') || '').trim();
+      const coordsRec = (params.get('coords_rec') || '').trim();
+      const coordsEnt = (params.get('coords_ent') || '').trim();
+      const telRaw = (params.get('tel') || '').trim();
+
+      // Rellenar la interfaz si hay datos en la URL
+      if (params.toString() !== "") {
+        document.getElementById('val-exp').innerText = 'EXP. ' + expediente;
+        document.getElementById('val-poliza').innerText = 'PÓLIZA: ' + poliza;
+        document.getElementById('val-cliente').innerText = cliente;
+        document.getElementById('val-coche').innerText = coche;
+        document.getElementById('val-matricula').innerText = matricula;
+        document.getElementById('val-averia').innerText = averia;
+        document.getElementById('val-notas').innerText = notas;
+        document.getElementById('val-contacto').innerText = contacto;
         document.getElementById('val-dir-rec').innerText = dirRec;
         document.getElementById('val-pob-rec').innerText = pobRec;
         document.getElementById('val-dir-ent').innerText = dirEnt;
         document.getElementById('val-pob-ent').innerText = pobEnt;
 
-        // Llamadas y WhatsApp
-        const pTel = params.get('tel');
-        if (pTel) {
-          document.getElementById('btn-llamar').href = 'tel:' + pTel;
-          const waText = encodeURIComponent(`Hola ${params.get('contacto') || ''}, soy de la grúa. Llego a la dirección en unos minutos.`);
-          document.getElementById('btn-whatsapp').href = `https://wa.me/34${pTel}?text=${waText}`;
+        // LLAMADA Y WHATSAPP (CORREGIDO DE RAÍZ)
+        const btnLlamar = document.getElementById('btn-llamar');
+        const btnWhatsapp = document.getElementById('btn-whatsapp');
+
+        if (telRaw) {
+          // Limpiar caracteres no numéricos excepto el '+' inicial si existe
+          const telFormateado = telRaw.replace(/[^\d+]/g, '');
+          btnLlamar.href = 'tel:' + telFormateado;
+          document.getElementById('txt-btn-llamar').innerText = 'Llamar';
+
+          // Para WhatsApp: SOLO dígitos y con código de país 34 sin duplicar
+          let telDigitos = telRaw.replace(/\D/g, '');
+          if (telDigitos.startsWith('34') && telDigitos.length > 9) {
+            // Ya incluye el prefijo 34
+          } else if (telDigitos.length === 9) {
+            telDigitos = '34' + telDigitos;
+          }
+          const textoWa = encodeURIComponent(`Hola ${contacto}, soy de la grúa. Llego a la dirección en unos minutos.`);
+          btnWhatsapp.href = `https://wa.me/${telDigitos}?text=${textoWa}`;
+        } else {
+          // Si no hay teléfono registrado en la ficha
+          btnLlamar.classList.add('opacity-40', 'pointer-events-none');
+          document.getElementById('txt-btn-llamar').innerText = 'Sin tel.';
+          btnWhatsapp.classList.add('opacity-40', 'pointer-events-none');
         }
 
-        // Navegación GPS / Dirección
-        const coordsRec = params.get('coords_rec');
-        const queryRec = coordsRec ? coordsRec : `${dirRec} ${pobRec}`;
+        // NAVEGACIÓN GPS (Murcia / Google Maps)
+        const queryRec = coordsRec ? coordsRec : `${dirRec}, ${pobRec}`;
         document.getElementById('btn-maps-rec').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryRec)}`;
 
-        const coordsEnt = params.get('coords_ent');
-        const queryEnt = coordsEnt ? coordsEnt : `${dirEnt} ${pobEnt}`;
+        const queryEnt = coordsEnt ? coordsEnt : `${dirEnt}, ${pobEnt}`;
         document.getElementById('btn-maps-ent').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryEnt)}`;
+
+        // Guardar automáticamente el parte en el historial local si tiene expediente
+        if (expediente !== '---') {
+          guardarParteEnHistorial({
+            expediente,
+            matricula,
+            coche,
+            cliente,
+            contacto,
+            recogida: `${dirRec} (${pobRec})`,
+            entrega: `${dirEnt} (${pobEnt})`,
+            estado: 'Pendiente',
+            fecha: new Date().toLocaleDateString('es-ES'),
+            hora: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+          });
+        }
       }
 
       // 2. Control de Cerrojos y Cámara
@@ -181,19 +275,21 @@
       function desbloquearRecogida() {
         const header = document.getElementById('header-banner');
         header.classList.remove('bg-slate-900', 'border-slate-800');
-        header.classList.add('bg-rose-900', 'border-rose-700');
+        header.classList.add('bg-rose-950', 'border-rose-700');
 
         const title = document.getElementById('header-title');
         title.innerText = "VEHÍCULO EN PLATAFORMA";
         title.classList.remove('text-slate-300');
-        title.classList.add('text-white');
+        title.classList.add('text-rose-200');
 
         document.getElementById('txt-btn-recogida').innerText = "Cargado ✓";
         btnRecogida.classList.remove('bg-slate-800', 'border-slate-600');
-        btnRecogida.classList.add('bg-emerald-700', 'border-emerald-600');
+        btnRecogida.classList.add('bg-emerald-700', 'border-emerald-500');
 
         panelRutaEntrega.classList.remove('opacity-40', 'pointer-events-none');
         panelEntrega.classList.remove('opacity-40', 'pointer-events-none');
+
+        actualizarEstadoParte(expediente, 'En plataforma');
       }
 
       if (btnRecogida) {
@@ -202,20 +298,17 @@
           desbloquearRecogida();
         });
       }
-
-      if (inputCamRecogida) {
-        inputCamRecogida.addEventListener('change', desbloquearRecogida);
-      }
+      if (inputCamRecogida) inputCamRecogida.addEventListener('change', desbloquearRecogida);
 
       function desbloquearEntrega() {
         document.getElementById('txt-btn-entrega').innerText = "Descargado ✓";
         btnEntrega.classList.remove('bg-slate-800', 'border-slate-600');
-        btnEntrega.classList.add('bg-emerald-700', 'border-emerald-600');
+        btnEntrega.classList.add('bg-emerald-700', 'border-emerald-500');
 
         const header = document.getElementById('header-banner');
-        header.classList.remove('bg-rose-900', 'border-rose-700');
-        header.classList.add('bg-emerald-900', 'border-emerald-800');
-        document.getElementById('header-title').innerText = "ENTREGA REALIZADA";
+        header.classList.remove('bg-rose-950', 'border-rose-700');
+        header.classList.add('bg-emerald-950', 'border-emerald-700');
+        document.getElementById('header-title').innerText = "ENTREGA EN DESTINO";
 
         btnFinalizar.classList.remove('bg-emerald-600/30', 'text-white/40', 'cursor-not-allowed', 'pointer-events-none');
         btnFinalizar.classList.add('bg-emerald-600', 'text-white', 'cursor-pointer');
@@ -226,6 +319,8 @@
           iconLock.classList.remove('fa-lock');
           iconLock.classList.add('fa-check-double');
         }
+
+        actualizarEstadoParte(expediente, 'Descargado');
       }
 
       if (btnEntrega) {
@@ -234,14 +329,9 @@
           desbloquearEntrega();
         });
       }
+      if (inputCamEntrega) inputCamEntrega.addEventListener('change', desbloquearEntrega);
 
-      if (inputCamEntrega) {
-        inputCamEntrega.addEventListener('change', desbloquearEntrega);
-      }
-
-      // 3. Envío directo de datos a tu Google Sheet
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUURn-YFf_9Q_jezEFhcjXniveTWT-pcU8aUpKTzEnln4PKlfaEd2v-292wkJGzjrU/exec";
-
+      // 3. Envío directo a Google Sheets y guardado final
       if (btnFinalizar) {
         btnFinalizar.addEventListener('click', () => {
           if (btnFinalizar.disabled || btnFinalizar.classList.contains('pointer-events-none')) return;
@@ -249,24 +339,24 @@
           btnFinalizar.disabled = true;
           btnFinalizar.classList.remove('bg-emerald-600', 'cursor-pointer');
           btnFinalizar.classList.add('bg-amber-600', 'cursor-not-allowed', 'opacity-90');
-          btnFinalizar.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i><span>ENVIANDO A GOOGLE SHEETS...</span>';
+          btnFinalizar.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i><span>GUARDANDO EN GOOGLE SHEETS...</span>';
 
           const ahora = new Date();
           const fechaHoraActual = ahora.toLocaleDateString('es-ES') + ' ' + ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
           const datosServicio = {
             fechaHora: fechaHoraActual,
-            expediente: document.getElementById('val-exp').innerText.replace('EXP. ', ''),
-            poliza: document.getElementById('val-poliza').innerText.replace('PÓLIZA: ', ''),
-            cliente: document.getElementById('val-cliente').innerText,
-            vehiculo: document.getElementById('val-coche').innerText,
-            matricula: document.getElementById('val-matricula').innerText,
-            averia: document.getElementById('val-averia').innerText,
-            notas: document.getElementById('val-notas').innerText,
-            contacto: document.getElementById('val-contacto').innerText,
-            telefono: document.getElementById('btn-llamar').href.replace('tel:', ''),
-            recogida: document.getElementById('val-dir-rec').innerText + ' (' + document.getElementById('val-pob-rec').innerText + ')',
-            entrega: document.getElementById('val-dir-ent').innerText + ' (' + document.getElementById('val-pob-ent').innerText + ')'
+            expediente: expediente,
+            poliza: poliza,
+            cliente: cliente,
+            vehiculo: coche,
+            matricula: matricula,
+            averia: averia,
+            notas: notas,
+            contacto: contacto,
+            telefono: telRaw,
+            recogida: `${dirRec} (${pobRec})`,
+            entrega: `${dirEnt} (${pobEnt})`
           };
 
           fetch(SCRIPT_URL, {
@@ -278,16 +368,145 @@
           .then(() => {
             btnFinalizar.classList.remove('bg-amber-600');
             btnFinalizar.classList.add('bg-slate-900', 'border-2', 'border-emerald-500', 'text-emerald-400');
-            btnFinalizar.innerHTML = '<i class="fa-solid fa-check-double text-emerald-400 mr-2"></i><span>SERVICIO TERMINADO Y GUARDADO ✓</span>';
+            btnFinalizar.innerHTML = '<i class="fa-solid fa-check-double text-emerald-400 mr-2"></i><span>SERVICIO GUARDADO CON ÉXITO ✓</span>';
+            actualizarEstadoParte(expediente, 'Finalizado');
           })
           .catch((error) => {
             btnFinalizar.disabled = false;
             btnFinalizar.classList.remove('bg-amber-600', 'cursor-not-allowed', 'opacity-90');
             btnFinalizar.classList.add('bg-rose-600', 'cursor-pointer');
-            btnFinalizar.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-2"></i><span>ERROR - TOCAR PARA REINTENTAR</span>';
+            btnFinalizar.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-2"></i><span>REINTENTAR ENVÍO</span>';
           });
         });
       }
+
+      // 4. Funciones de Historial Local (localStorage)
+      function obtenerHistorial() {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function guardarParteEnHistorial(nuevoParte) {
+        let lista = obtenerHistorial();
+        const index = lista.findIndex(p => p.expediente === nuevoParte.expediente && p.expediente !== '---');
+        if (index >= 0) {
+          // Si ya existe, actualizamos los datos sin duplicar
+          lista[index] = { ...lista[index], ...nuevoParte };
+        } else {
+          lista.unshift(nuevoParte);
+        }
+        // Guardar hasta 150 registros
+        if (lista.length > 150) lista = lista.slice(0, 150);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
+        actualizarContadorBadge();
+      }
+
+      function actualizarEstadoParte(numExp, estado) {
+        if (!numExp || numExp === '---') return;
+        let lista = obtenerHistorial();
+        const index = lista.findIndex(p => p.expediente === numExp);
+        if (index >= 0) {
+          lista[index].estado = estado;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
+          actualizarContadorBadge();
+        }
+      }
+
+      function actualizarContadorBadge() {
+        const lista = obtenerHistorial();
+        const badge = document.getElementById('badge-contador-semana');
+        if (badge) badge.innerText = `Partes (${lista.length})`;
+      }
+
+      // 5. Modal de Historial y Copia de Resumen
+      const modalHistorial = document.getElementById('modal-historial');
+      const btnAbrirHistorial = document.getElementById('btn-abrir-historial');
+      const btnCerrarHistorial = document.getElementById('btn-cerrar-historial');
+      const listaContenedor = document.getElementById('lista-partes-historial');
+      const subtituloContador = document.getElementById('subtitulo-contador');
+
+      function renderizarHistorial() {
+        const lista = obtenerHistorial();
+        subtituloContador.innerText = `${lista.length} servicios registrados en este móvil`;
+        listaContenedor.innerHTML = '';
+
+        if (lista.length === 0) {
+          listaContenedor.innerHTML = '<p class="text-slate-500 text-center py-6">No hay partes guardados todavía.</p>';
+          return;
+        }
+
+        lista.forEach(p => {
+          const colorEstado = p.estado === 'Finalizado' ? 'text-emerald-400 bg-emerald-950/60 border-emerald-800' : 'text-amber-400 bg-amber-950/60 border-amber-800';
+          const item = document.createElement('div');
+          item.className = 'bg-slate-800/80 border border-slate-700 rounded-xl p-3 flex justify-between items-start space-x-2';
+          item.innerHTML = `
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center space-x-2">
+                <span class="font-mono font-bold text-white text-xs">${p.matricula}</span>
+                <span class="text-[10px] text-slate-400">${p.fecha} ${p.hora || ''}</span>
+              </div>
+              <p class="text-xs font-semibold text-slate-200 truncate mt-0.5">${p.coche}</p>
+              <p class="text-[11px] text-slate-400 truncate">Exp: ${p.expediente}</p>
+            </div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${colorEstado} uppercase shrink-0">${p.estado}</span>
+          `;
+          listaContenedor.appendChild(item);
+        });
+      }
+
+      if (btnAbrirHistorial) {
+        btnAbrirHistorial.addEventListener('click', () => {
+          renderizarHistorial();
+          modalHistorial.classList.remove('hidden');
+          modalHistorial.classList.add('flex');
+        });
+      }
+
+      if (btnCerrarHistorial) {
+        btnCerrarHistorial.addEventListener('click', () => {
+          modalHistorial.classList.add('hidden');
+          modalHistorial.classList.remove('flex');
+        });
+      }
+
+      // Copiar resumen de la semana al portapapeles
+      const btnCopiarResumen = document.getElementById('btn-copiar-resumen');
+      if (btnCopiarResumen) {
+        btnCopiarResumen.addEventListener('click', () => {
+          const lista = obtenerHistorial();
+          if (lista.length === 0) {
+            alert('No hay partes para copiar');
+            return;
+          }
+          let texto = `📋 RESUMEN DE SERVICIOS REALIZADOS (${lista.length}):\n\n`;
+          lista.forEach((p, i) => {
+            texto += `${i + 1}. [${p.fecha}] ${p.matricula} - ${p.coche} | Exp: ${p.expediente} | Estado: ${p.estado}\n`;
+          });
+          navigator.clipboard.writeText(texto).then(() => {
+            btnCopiarResumen.innerHTML = '<i class="fa-solid fa-check"></i><span>¡Copiado!</span>';
+            setTimeout(() => {
+              btnCopiarResumen.innerHTML = '<i class="fa-solid fa-copy"></i><span>Copiar Resumen</span>';
+            }, 2000);
+          });
+        });
+      }
+
+      // Borrar historial si se desea reiniciar semana
+      const btnLimpiar = document.getElementById('btn-limpiar-historial');
+      if (btnLimpiar) {
+        btnLimpiar.addEventListener('click', () => {
+          if (confirm('¿Seguro que quieres vaciar el historial de partes del móvil?')) {
+            localStorage.removeItem(STORAGE_KEY);
+            renderizarHistorial();
+            actualizarContadorBadge();
+          }
+        });
+      }
+
+      actualizarContadorBadge();
     });
   </script>
 </body>
