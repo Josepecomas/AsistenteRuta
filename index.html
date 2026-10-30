@@ -521,4 +521,382 @@
     });
   </script>
 </body>
-</html>
+</html><!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Asistente de Ruta - Modo Cabina</title>
+  <meta name="theme-color" content="#020617">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Iconos FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen pb-16 select-none">
+
+  <!-- CABECERA DINÁMICA -->
+  <header id="header-banner" class="bg-slate-900 border-b border-slate-800 px-4 py-3 sticky top-0 z-40 flex items-center justify-between transition-colors duration-500 shadow-md">
+    <div class="flex items-center space-x-2">
+      <span class="inline-block w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
+      <span id="header-title" class="font-black tracking-wider text-xs sm:text-sm uppercase text-slate-300">SERVICIO ACTIVO</span>
+    </div>
+    <div class="flex items-center space-x-3">
+      <!-- Botón recuento semana -->
+      <button id="btn-abrir-historial" type="button" class="bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 px-2.5 py-1 rounded-lg text-xs font-bold flex items-center space-x-1 shadow">
+        <i class="fa-solid fa-list-check"></i>
+        <span id="badge-contador-semana">Partes (0)</span>
+      </button>
+      <div class="text-right">
+        <span id="val-exp" class="text-sm sm:text-base text-slate-400 font-mono block">EXP. ---</span>
+        <span id="val-poliza" class="text-xs text-amber-500 font-mono block">PÓLIZA: ---</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-md mx-auto p-4 space-y-4">
+
+    <!-- TARJETA VEHÍCULO Y AVERÍA -->
+    <section class="bg-slate-900 border-2 border-slate-700 rounded-2xl p-4 shadow-xl">
+      <div class="flex justify-between items-start">
+        <div class="pr-2">
+          <span id="val-cliente" class="text-[11px] font-bold text-amber-400 uppercase tracking-widest block">CLIENTE/COMPAÑÍA</span>
+          <h2 id="val-coche" class="text-xl font-black text-white mt-0.5 leading-tight">VEHÍCULO</h2>
+        </div>
+        <div id="val-matricula" class="bg-white text-black font-mono font-black text-lg px-3 py-1 rounded border-2 border-slate-400 shadow-inner tracking-wider whitespace-nowrap">
+          ---
+        </div>
+      </div>
+      <div class="mt-3 pt-3 border-t border-slate-800 text-xs text-slate-400 flex flex-col space-y-1.5">
+        <span>Avería: <b id="val-averia" class="text-slate-200">Asistencia general</b></span>
+        <span class="text-rose-400 font-bold text-xs uppercase" id="val-notas"></span>
+      </div>
+    </section>
+
+    <!-- CONTACTO CLIENTE -->
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-lg">
+      <div class="flex justify-between items-baseline">
+        <span class="text-xs font-semibold text-slate-400 uppercase">Contacto</span>
+        <span id="val-contacto" class="text-base font-bold text-slate-200">Conductor</span>
+      </div>
+      <div class="grid grid-cols-2 gap-3 pt-1">
+        <a id="btn-llamar" href="#" class="bg-emerald-600 active:bg-emerald-700 text-white font-bold py-3.5 px-3 rounded-xl flex items-center justify-center space-x-2 text-base shadow-md transition-all">
+          <i class="fa-solid fa-phone text-lg"></i>
+          <span id="txt-btn-llamar">Llamar</span>
+        </a>
+        <a id="btn-whatsapp" href="#" target="_blank" class="bg-emerald-500 active:bg-emerald-600 text-slate-950 font-black py-3.5 px-3 rounded-xl flex items-center justify-center space-x-2 text-base shadow-md transition-all">
+          <i class="fa-brands fa-whatsapp text-xl"></i>
+          <span>Aviso 15 min</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- NAVEGACIÓN 1: RECOGIDA -->
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2.5 shadow-lg">
+      <div class="flex items-start space-x-3">
+        <i class="fa-solid fa-location-arrow text-blue-500 text-lg mt-1"></i>
+        <div>
+          <span class="text-xs font-semibold text-slate-400 uppercase">Punto de Recogida</span>
+          <p id="val-dir-rec" class="text-base font-bold text-slate-100 leading-snug">Dirección de recogida</p>
+          <p id="val-pob-rec" class="text-xs text-slate-400 mt-0.5">Población</p>
+        </div>
+      </div>
+      <a id="btn-maps-rec" href="#" target="_blank" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md mt-2">
+        <i class="fa-solid fa-map-location-dot"></i>
+        <span>Ruta a Recogida</span>
+      </a>
+    </section>
+
+    <!-- SECUENCIA DE CERROJOS Y ENTREGA -->
+    <section class="bg-slate-900/90 border-2 border-dashed border-amber-500/50 rounded-2xl p-4 space-y-4">
+      
+      <!-- Paso 1: Foto Recogida -->
+      <div class="text-center">
+        <span class="inline-block bg-amber-500/10 text-amber-400 text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-amber-500/30 mb-2">
+          1. Cerrojo Recogida
+        </span>
+        <input type="file" id="input-cam-recogida" accept="image/*" capture="environment" class="hidden">
+        <button id="btn-foto-recogida" type="button" class="w-full bg-slate-800 active:bg-slate-700 border border-slate-600 text-white font-bold py-3.5 rounded-xl flex items-center justify-center space-x-2 transition-all">
+          <i class="fa-solid fa-camera text-slate-300"></i>
+          <span id="txt-btn-recogida">Foto coche cargado</span>
+        </button>
+      </div>
+
+      <!-- Navegación 2: Entrega (Editable en cabina) -->
+      <div id="panel-ruta-entrega" class="opacity-40 transition-opacity duration-300 pointer-events-none border-t border-b border-slate-700 py-4 my-2">
+        <div class="flex items-start space-x-3 mb-3">
+          <i class="fa-solid fa-flag-checkered text-rose-500 text-lg mt-1"></i>
+          <div class="flex-1">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-semibold text-slate-400 uppercase">Destino / Taller</span>
+              <span class="text-[10px] text-amber-400 font-medium flex items-center">
+                <i class="fa-solid fa-pen-to-square mr-1"></i>Editable en cabina
+              </span>
+            </div>
+            <!-- Campo Dirección / Taller editable -->
+            <input type="text" id="val-dir-ent" class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500 text-slate-100 font-bold text-sm sm:text-base p-2.5 rounded-xl outline-none transition-colors" placeholder="Taller o dirección de destino">
+            <!-- Campo Población editable -->
+            <input type="text" id="val-pob-ent" class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500 text-slate-300 text-xs sm:text-sm p-2 rounded-xl mt-1.5 outline-none transition-colors" placeholder="Población / Localidad">
+          </div>
+        </div>
+        <a id="btn-maps-ent" href="#" target="_blank" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md">
+          <i class="fa-solid fa-diamond-turn-right"></i>
+          <span>Ruta a Destino</span>
+        </a>
+      </div>
+
+      <!-- Paso 2: Foto Entrega -->
+      <div id="panel-entrega" class="opacity-40 transition-opacity duration-300 pointer-events-none text-center">
+        <span class="inline-block bg-rose-500/10 text-rose-400 text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-rose-500/30 mb-2">
+          2. Cerrojo Descarga
+        </span>
+        <input type="file" id="input-cam-entrega" accept="image/*" capture="environment" class="hidden">
+        <button id="btn-foto-entrega" type="button" class="w-full bg-slate-800 active:bg-slate-700 border border-slate-600 text-white font-bold py-3.5 rounded-xl flex items-center justify-center space-x-2 transition-all">
+          <i class="fa-solid fa-camera text-slate-300"></i>
+          <span id="txt-btn-entrega">Foto entrega taller</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- BOTÓN FINALIZAR -->
+    <button id="btn-finalizar" type="button" class="w-full bg-emerald-600/30 text-white/40 font-black text-lg py-4 rounded-2xl shadow-xl flex items-center justify-center space-x-2 uppercase tracking-wide cursor-not-allowed pointer-events-none transition-all duration-300">
+      <i class="fa-solid fa-lock"></i>
+      <span id="txt-btn-finalizar">Bloqueado</span>
+    </button>
+
+  </main>
+
+  <!-- MODAL HISTORIAL DE LA SEMANA -->
+  <div id="modal-historial" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-t-2xl sm:rounded-2xl max-h-[85vh] flex flex-col shadow-2xl">
+      <div class="p-4 border-b border-slate-800 flex justify-between items-center">
+        <div>
+          <h3 class="font-black text-white text-base flex items-center space-x-2">
+            <i class="fa-solid fa-clipboard-list text-amber-400"></i>
+            <span>Historial de Partes</span>
+          </h3>
+          <p id="subtitulo-contador" class="text-xs text-slate-400">Cargando...</p>
+        </div>
+        <button id="btn-cerrar-historial" class="text-slate-400 hover:text-white text-xl p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      
+      <div id="lista-partes-historial" class="p-4 overflow-y-auto space-y-2.5 flex-1 text-sm"></div>
+
+      <div class="p-3 border-t border-slate-800 grid grid-cols-2 gap-2 bg-slate-900/90">
+        <button id="btn-copiar-resumen" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center space-x-1.5 shadow">
+          <i class="fa-solid fa-copy"></i>
+          <span>Copiar Resumen</span>
+        </button>
+        <button id="btn-limpiar-historial" class="bg-slate-800 hover:bg-rose-900/60 text-slate-300 hover:text-rose-200 border border-slate-700 font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center space-x-1.5 shadow">
+          <i class="fa-solid fa-trash-can"></i>
+          <span>Borrar Antiguos</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const STORAGE_KEY = 'asistente_ruta_partes_semana';
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUURn-YFf_9Q_jezEFhcjXniveTWT-pcU8aUpKTzEnln4PKlfaEd2v-292wkJGzjrU/exec";
+
+      // 1. Lectura de parámetros de la URL
+      const params = new URLSearchParams(window.location.search);
+      const expediente = (params.get('exp') || '---').trim();
+      const matricula = (params.get('matricula') || '---').trim().toUpperCase();
+      const coche = (params.get('coche') || 'VEHÍCULO').trim();
+      const cliente = (params.get('cliente') || 'ASISTENCIA').trim();
+      const averia = (params.get('averia') || 'Asistencia').trim();
+      const notas = (params.get('notas') || '').trim();
+      const contacto = (params.get('contacto') || 'Conductor').trim();
+      const poliza = (params.get('poliza') || '---').trim();
+      const dirRec = (params.get('dir_rec') || '---').trim();
+      const pobRec = (params.get('pob_rec') || '').trim();
+      const dirEntInicial = (params.get('dir_ent') || '').trim();
+      const pobEntInicial = (params.get('pob_ent') || '').trim();
+      const coordsRec = (params.get('coords_rec') || '').trim();
+      const coordsEnt = (params.get('coords_ent') || '').trim();
+      const telRaw = (params.get('tel') || '').trim();
+
+      const inputDirEnt = document.getElementById('val-dir-ent');
+      const inputPobEnt = document.getElementById('val-pob-ent');
+
+      if (params.toString() !== "") {
+        document.getElementById('val-exp').innerText = 'EXP. ' + expediente;
+        document.getElementById('val-poliza').innerText = 'PÓLIZA: ' + poliza;
+        document.getElementById('val-cliente').innerText = cliente;
+        document.getElementById('val-coche').innerText = coche;
+        document.getElementById('val-matricula').innerText = matricula;
+        document.getElementById('val-averia').innerText = averia;
+        document.getElementById('val-notas').innerText = notas;
+        document.getElementById('val-contacto').innerText = contacto;
+        document.getElementById('val-dir-rec').innerText = dirRec;
+        document.getElementById('val-pob-rec').innerText = pobRec;
+
+        // Cargar valores iniciales en los campos de entrega editables
+        inputDirEnt.value = dirEntInicial;
+        inputPobEnt.value = pobEntInicial;
+
+        // LLAMADA Y WHATSAPP LIMPIOS
+        const btnLlamar = document.getElementById('btn-llamar');
+        const btnWhatsapp = document.getElementById('btn-whatsapp');
+
+        if (telRaw) {
+          const telFormateado = telRaw.replace(/[^\d+]/g, '');
+          btnLlamar.href = 'tel:' + telFormateado;
+          document.getElementById('txt-btn-llamar').innerText = 'Llamar';
+
+          let telDigitos = telRaw.replace(/\D/g, '');
+          if (telDigitos.startsWith('34') && telDigitos.length > 9) {
+            // Ya tiene prefijo
+          } else if (telDigitos.length === 9) {
+            telDigitos = '34' + telDigitos;
+          }
+          const textoWa = encodeURIComponent(`Hola ${contacto}, soy de la grúa. Llego a la dirección en unos minutos.`);
+          btnWhatsapp.href = `https://wa.me/${telDigitos}?text=${textoWa}`;
+        } else {
+          btnLlamar.classList.add('opacity-40', 'pointer-events-none');
+          document.getElementById('txt-btn-llamar').innerText = 'Sin tel.';
+          btnWhatsapp.classList.add('opacity-40', 'pointer-events-none');
+        }
+
+        // GPS Recogida
+        const queryRec = coordsRec ? coordsRec : `${dirRec}, ${pobRec}`;
+        document.getElementById('btn-maps-rec').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryRec)}`;
+
+        // GPS Entrega Dinámico
+        function actualizarGpsEntrega() {
+          const d = inputDirEnt.value.trim();
+          const p = inputPobEnt.value.trim();
+          const queryFinal = (coordsEnt && !d) ? coordsEnt : `${d}, ${p}`.trim();
+          document.getElementById('btn-maps-ent').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryFinal || 'Murcia')}`;
+        }
+
+        inputDirEnt.addEventListener('input', actualizarGpsEntrega);
+        inputPobEnt.addEventListener('input', actualizarGpsEntrega);
+        actualizarGpsEntrega();
+
+        // Guardado inicial en el historial local
+        if (expediente !== '---') {
+          guardarParteEnHistorial({
+            expediente,
+            matricula,
+            coche,
+            cliente,
+            contacto,
+            recogida: `${dirRec} (${pobRec})`,
+            entrega: `${dirEntInicial} (${pobEntInicial})`,
+            estado: 'Pendiente',
+            fecha: new Date().toLocaleDateString('es-ES'),
+            hora: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+          });
+        }
+      }
+
+      // 2. Control de Cerrojos y Cámara
+      const btnRecogida = document.getElementById('btn-foto-recogida');
+      const inputCamRecogida = document.getElementById('input-cam-recogida');
+      const panelRutaEntrega = document.getElementById('panel-ruta-entrega');
+      const panelEntrega = document.getElementById('panel-entrega');
+      const btnEntrega = document.getElementById('btn-foto-entrega');
+      const inputCamEntrega = document.getElementById('input-cam-entrega');
+      const btnFinalizar = document.getElementById('btn-finalizar');
+
+      function desbloquearRecogida() {
+        const header = document.getElementById('header-banner');
+        header.classList.remove('bg-slate-900', 'border-slate-800');
+        header.classList.add('bg-rose-950', 'border-rose-700');
+
+        const title = document.getElementById('header-title');
+        title.innerText = "VEHÍCULO EN PLATAFORMA";
+        title.classList.remove('text-slate-300');
+        title.classList.add('text-rose-200');
+
+        document.getElementById('txt-btn-recogida').innerText = "Cargado ✓";
+        btnRecogida.classList.remove('bg-slate-800', 'border-slate-600');
+        btnRecogida.classList.add('bg-emerald-700', 'border-emerald-500');
+
+        panelRutaEntrega.classList.remove('opacity-40', 'pointer-events-none');
+        panelEntrega.classList.remove('opacity-40', 'pointer-events-none');
+
+        actualizarEstadoParte(expediente, 'En plataforma');
+      }
+
+      if (btnRecogida) {
+        btnRecogida.addEventListener('click', () => {
+          if (inputCamRecogida) inputCamRecogida.click();
+          desbloquearRecogida();
+        });
+      }
+      if (inputCamRecogida) inputCamRecogida.addEventListener('change', desbloquearRecogida);
+
+      function desbloquearEntrega() {
+        document.getElementById('txt-btn-entrega').innerText = "Descargado ✓";
+        btnEntrega.classList.remove('bg-slate-800', 'border-slate-600');
+        btnEntrega.classList.add('bg-emerald-700', 'border-emerald-500');
+
+        const header = document.getElementById('header-banner');
+        header.classList.remove('bg-rose-950', 'border-rose-700');
+        header.classList.add('bg-emerald-950', 'border-emerald-700');
+        document.getElementById('header-title').innerText = "ENTREGA EN DESTINO";
+
+        btnFinalizar.classList.remove('bg-emerald-600/30', 'text-white/40', 'cursor-not-allowed', 'pointer-events-none');
+        btnFinalizar.classList.add('bg-emerald-600', 'text-white', 'cursor-pointer');
+        document.getElementById('txt-btn-finalizar').innerText = "FINALIZAR SERVICIO";
+        
+        const iconLock = btnFinalizar.querySelector('i');
+        if (iconLock) {
+          iconLock.classList.remove('fa-lock');
+          iconLock.classList.add('fa-check-double');
+        }
+
+        actualizarEstadoParte(expediente, 'Descargado', `${inputDirEnt.value.trim()} (${inputPobEnt.value.trim()})`);
+      }
+
+      if (btnEntrega) {
+        btnEntrega.addEventListener('click', () => {
+          if (inputCamEntrega) inputCamEntrega.click();
+          desbloquearEntrega();
+        });
+      }
+      if (inputCamEntrega) inputCamEntrega.addEventListener('change', desbloquearEntrega);
+
+      // 3. Envío directo a Google Sheets con la dirección final editada
+      if (btnFinalizar) {
+        btnFinalizar.addEventListener('click', () => {
+          if (btnFinalizar.disabled || btnFinalizar.classList.contains('pointer-events-none')) return;
+
+          btnFinalizar.disabled = true;
+          btnFinalizar.classList.remove('bg-emerald-600', 'cursor-pointer');
+          btnFinalizar.classList.add('bg-amber-600', 'cursor-not-allowed', 'opacity-90');
+          btnFinalizar.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i><span>GUARDANDO EN GOOGLE SHEETS...</span>';
+
+          const ahora = new Date();
+          const fechaHoraActual = ahora.toLocaleDateString('es-ES') + ' ' + ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+          const entregaFinal = `${inputDirEnt.value.trim()} (${inputPobEnt.value.trim()})`;
+
+          const datosServicio = {
+            fechaHora: fechaHoraActual,
+            expediente: expediente,
+            poliza: poliza,
+            cliente: cliente,
+            vehiculo: coche,
+            matricula: matricula,
+            averia: averia,
+            notas: notas,
+            contacto: contacto,
+            telefono: telRaw,
+            recogida: `${dirRec} (${pobRec})`,
+            entrega: entregaFinal
+          };
+
+          fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+        
