@@ -173,26 +173,22 @@
 
   <script>
     (function() {
-      var params = new URLSearchParams(window.location.search);
-      var expediente = params.get('exp') || '';
-      var matricula = params.get('mat') || '';
-      var marca = params.get('marca') || '';
-      var modelo = params.get('mod') || '';
-      var recNom = params.get('rec_nom') || '';
-      var recCoord = params.get('rec_coord') || '';
-      var entNom = params.get('ent_nom') || '';
-      var entCoord = params.get('ent_coord') || '';
-      var asegurado = params.get('aseg') || '';
-      var rawTel = params.get('tel') || '';
-      var averia = params.get('averia') || '';
-      var observaciones = params.get('obs') || '';
+      // 1. Obtener parámetros de la URL
+      const params = new URLSearchParams(window.location.search);
+      const expediente = params.get('exp') || '';
+      const matricula = params.get('mat') || '';
+      const marca = params.get('marca') || '';
+      const modelo = params.get('mod') || '';
+      const recNom = params.get('rec_nom') || '';
+      const recCoord = params.get('rec_coord') || '';
+      let entNom = params.get('ent_nom') || '';
+      const entCoord = params.get('ent_coord') || '';
+      const asegurado = params.get('aseg') || '';
+      const telefono = params.get('tel') || '';
+      const averia = params.get('averia') || '';
+      const observaciones = params.get('obs') || '';
 
-      // Limpieza del teléfono: quitar espacios, caracteres no numéricos y prefijo 34
-      var cleanDigits = rawTel.replace(/\D/g, '');
-      if (cleanDigits.startsWith('34') && cleanDigits.length === 11) {
-        cleanDigits = cleanDigits.substring(2);
-      }
-
+      // 2. Rellenar campos en pantalla
       if (expediente) {
         document.getElementById('tag-exp').textContent = 'EXP: ' + expediente;
       }
@@ -208,30 +204,32 @@
         document.getElementById('val-obs').textContent = observaciones;
       }
 
-      var btnTel = document.getElementById('btn-tel');
-      if (cleanDigits) {
-        btnTel.href = 'tel:' + cleanDigits;
-        btnTel.textContent = '📞 Llamar (' + cleanDigits + ')';
+      // 3. Configurar llamadas y recogida
+      const btnTel = document.getElementById('btn-tel');
+      if (telefono) {
+        btnTel.href = 'tel:' + telefono.replace(/\s+/g, '');
+        btnTel.textContent = '📞 Llamar (' + telefono + ')';
       } else {
         btnTel.style.display = 'none';
       }
 
-      var btnNavRec = document.getElementById('btn-nav-rec');
+      const btnNavRec = document.getElementById('btn-nav-rec');
       if (recCoord) {
-        btnNavRec.href = '[https://www.google.com/maps/dir/?api=1&destination=](https://www.google.com/maps/dir/?api=1&destination=)' + encodeURIComponent(recCoord);
+        btnNavRec.href = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(recCoord);
       } else if (recNom) {
-        btnNavRec.href = '[https://www.google.com/maps/search/?api=1&query=](https://www.google.com/maps/search/?api=1&query=)' + encodeURIComponent(recNom);
+        btnNavRec.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(recNom);
       } else {
         btnNavRec.style.display = 'none';
       }
 
-      var btnNavEnt = document.getElementById('btn-nav-ent');
+      // 4. Actualización dinámica del enlace de destino
+      const btnNavEnt = document.getElementById('btn-nav-ent');
       function actualizarEnlaceDestino(nombreDestino) {
         if (entCoord) {
-          btnNavEnt.href = '[https://www.google.com/maps/dir/?api=1&destination=](https://www.google.com/maps/dir/?api=1&destination=)' + encodeURIComponent(entCoord);
+          btnNavEnt.href = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(entCoord);
           btnNavEnt.style.display = 'flex';
         } else if (nombreDestino && nombreDestino.trim() !== '') {
-          btnNavEnt.href = '[https://www.google.com/maps/search/?api=1&query=](https://www.google.com/maps/search/?api=1&query=)' + encodeURIComponent(nombreDestino.trim());
+          btnNavEnt.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(nombreDestino.trim());
           btnNavEnt.style.display = 'flex';
         } else {
           btnNavEnt.style.display = 'none';
@@ -240,16 +238,19 @@
 
       actualizarEnlaceDestino(entNom);
 
+      // Evento para guardar/modificar destino en caliente
       document.getElementById('btn-guardar-dest').addEventListener('click', function() {
-        var nuevoDestino = document.getElementById('input-destino').value;
+        const nuevoDestino = document.getElementById('input-destino').value;
         actualizarEnlaceDestino(nuevoDestino);
         guardarEnHistorial(nuevoDestino);
+        alert('Destino actualizado para navegación');
       });
 
+      // 5. Historial LocalStorage
       function guardarEnHistorial(destinoActual) {
         if (!matricula && !expediente) return;
-        var historial = JSON.parse(localStorage.getItem('asistente_historial') || '[]');
-        var registro = {
+        let historial = JSON.parse(localStorage.getItem('asistente_historial') || '[]');
+        const registro = {
           exp: expediente,
           mat: matricula,
           vehiculo: (marca + ' ' + modelo).trim(),
@@ -257,29 +258,25 @@
           destino: destinoActual || entNom,
           fecha: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
-        historial = [registro].concat(historial.filter(function(item) {
-          return item.exp !== expediente || !item.exp;
-        })).slice(0, 5);
+        // Evitar duplicados consecutivos
+        historial = [registro, ...historial.filter(item => item.exp !== expediente || !item.exp)].slice(0, 5);
         localStorage.setItem('asistente_historial', JSON.stringify(historial));
         renderHistorial();
       }
 
       function renderHistorial() {
-        var listContainer = document.getElementById('historial-list');
-        var historial = JSON.parse(localStorage.getItem('asistente_historial') || '[]');
+        const listContainer = document.getElementById('historial-list');
+        const historial = JSON.parse(localStorage.getItem('asistente_historial') || '[]');
         if (historial.length === 0) {
           listContainer.innerHTML = '<span style="color:#666;">Sin registros previos</span>';
           return;
         }
-        var html = '';
-        for (var i = 0; i < historial.length; i++) {
-          var item = historial[i];
-          html += '<div class="history-item">' +
-            '<strong>' + item.mat + '</strong> (' + item.vehiculo + ') - ' + item.fecha + '<br>' +
-            '<span style="color:#aaa;">🏁 ' + (item.destino || 'Pendiente') + '</span>' +
-            '</div>';
-        }
-        listContainer.innerHTML = html;
+        listContainer.innerHTML = historial.map(item => `
+          <div class="history-item">
+            <strong>${item.mat}</strong> (${item.vehiculo}) - ${item.fecha}<br>
+            <span style="color:#aaa;">🏁 ${item.destino || 'Pendiente'}</span>
+          </div>
+        `).join('');
       }
 
       if (matricula || expediente) {
