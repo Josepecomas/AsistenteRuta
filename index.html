@@ -10,7 +10,6 @@
   <!-- Iconos FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Estilos para evitar selecciones accidentales en cabina */
     body { -webkit-tap-highlight-color: transparent; }
   </style>
 </head>
@@ -23,7 +22,6 @@
       <span id="header-title" class="font-black tracking-wider text-xs sm:text-sm uppercase text-slate-300">SERVICIO ACTIVO</span>
     </div>
     <div class="flex items-center space-x-3">
-      <!-- Botón para ver el historial y recuento de la semana -->
       <button id="btn-abrir-historial" type="button" class="bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 px-2.5 py-1 rounded-lg text-xs font-bold flex items-center space-x-1 shadow">
         <i class="fa-solid fa-list-check"></i>
         <span id="badge-contador-semana">Partes (0)</span>
@@ -61,12 +59,10 @@
         <span id="val-contacto" class="text-base font-bold text-slate-200">Conductor</span>
       </div>
       <div class="grid grid-cols-2 gap-3 pt-1">
-        <!-- Botón Llamar -->
         <a id="btn-llamar" href="#" class="bg-emerald-600 active:bg-emerald-700 text-white font-bold py-3.5 px-3 rounded-xl flex items-center justify-center space-x-2 text-base shadow-md transition-all">
           <i class="fa-solid fa-phone text-lg"></i>
           <span id="txt-btn-llamar">Llamar</span>
         </a>
-        <!-- Botón WhatsApp -->
         <a id="btn-whatsapp" href="#" target="_blank" class="bg-emerald-500 active:bg-emerald-600 text-slate-950 font-black py-3.5 px-3 rounded-xl flex items-center justify-center space-x-2 text-base shadow-md transition-all">
           <i class="fa-brands fa-whatsapp text-xl"></i>
           <span>Aviso 15 min</span>
@@ -84,7 +80,7 @@
           <p id="val-pob-rec" class="text-xs text-slate-400 mt-0.5">Población</p>
         </div>
       </div>
-      <a id="btn-maps-rec" href="#" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md mt-2">
+      <a id="btn-maps-rec" href="#" target="_blank" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md mt-2">
         <i class="fa-solid fa-map-location-dot"></i>
         <span>Ruta a Recogida</span>
       </a>
@@ -105,23 +101,23 @@
         </button>
       </div>
 
-      <!-- Navegación 2: Entrega (Bloqueado al inicio) -->
+      <!-- Navegación 2: Entrega -->
       <div id="panel-ruta-entrega" class="opacity-40 transition-opacity duration-300 pointer-events-none border-t border-b border-slate-700 py-4 my-2">
         <div class="flex items-start space-x-3 mb-3">
           <i class="fa-solid fa-flag-checkered text-rose-500 text-lg mt-1"></i>
           <div>
             <span class="text-xs font-semibold text-slate-400 uppercase">Destino / Taller</span>
-            <p id="val-dir-ent" class="text-base font-bold text-slate-100 leading-snug">Dirección de entrega</p>
-            <p id="val-pob-ent" class="text-xs text-slate-400 mt-0.5">Población</p>
+            <p id="val-dir-ent" class="text-base font-bold text-slate-100 leading-snug">Destino a determinar</p>
+            <p id="val-pob-ent" class="text-xs text-slate-400 mt-0.5">---</p>
           </div>
         </div>
-        <a id="btn-maps-ent" href="#" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md">
+        <a id="btn-maps-ent" href="#" target="_blank" class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 text-sm shadow-md">
           <i class="fa-solid fa-diamond-turn-right"></i>
           <span>Ruta a Destino</span>
         </a>
       </div>
 
-      <!-- Paso 2: Foto Entrega (Bloqueado al inicio) -->
+      <!-- Paso 2: Foto Entrega -->
       <div id="panel-entrega" class="opacity-40 transition-opacity duration-300 pointer-events-none text-center">
         <span class="inline-block bg-rose-500/10 text-rose-400 text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-rose-500/30 mb-2">
           2. Cerrojo Descarga
@@ -142,7 +138,7 @@
 
   </main>
 
-  <!-- MODAL HISTORIAL DE LA SEMANA -->
+  <!-- MODAL HISTORIAL -->
   <div id="modal-historial" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-t-2xl sm:rounded-2xl max-h-[85vh] flex flex-col shadow-2xl">
       <div class="p-4 border-b border-slate-800 flex justify-between items-center">
@@ -151,16 +147,14 @@
             <i class="fa-solid fa-clipboard-list text-amber-400"></i>
             <span>Historial de Partes</span>
           </h3>
-          <p id="subtitulo-contador" class="text-xs text-slate-400">Cargando recuento...</p>
+          <p id="subtitulo-contador" class="text-xs text-slate-400">Cargando...</p>
         </div>
         <button id="btn-cerrar-historial" class="text-slate-400 hover:text-white text-xl p-1">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
       
-      <div id="lista-partes-historial" class="p-4 overflow-y-auto space-y-2.5 flex-1 text-sm">
-        <!-- Filas de partes generadas por JS -->
-      </div>
+      <div id="lista-partes-historial" class="p-4 overflow-y-auto space-y-2.5 flex-1 text-sm"></div>
 
       <div class="p-3 border-t border-slate-800 grid grid-cols-2 gap-2 bg-slate-900/90">
         <button id="btn-copiar-resumen" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center space-x-1.5 shadow">
@@ -180,25 +174,26 @@
       const STORAGE_KEY = 'asistente_ruta_partes_semana';
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUURn-YFf_9Q_jezEFhcjXniveTWT-pcU8aUpKTzEnln4PKlfaEd2v-292wkJGzjrU/exec";
 
-      // 1. Lectura robusta de parámetros de la URL
+      // 1. Lectura compatible de parámetros
       const params = new URLSearchParams(window.location.search);
       const expediente = (params.get('exp') || '---').trim();
-      const matricula = (params.get('matricula') || '---').trim().toUpperCase();
-      const coche = (params.get('coche') || 'VEHÍCULO').trim();
+      const matricula = (params.get('matricula') || params.get('mat') || '---').trim().toUpperCase();
+      const marca = params.get('marca') || '';
+      const modelo = params.get('mod') || '';
+      const coche = (params.get('coche') || (marca + ' ' + modelo).trim() || 'VEHÍCULO').trim();
       const cliente = (params.get('cliente') || 'ASISTENCIA').trim();
-      const averia = (params.get('averia') || 'Asistencia').trim();
-      const notas = (params.get('notas') || '').trim();
-      const contacto = (params.get('contacto') || 'Conductor').trim();
+      const averia = (params.get('averia') || 'Asistencia general').trim();
+      const notas = (params.get('notas') || params.get('obs') || '').trim();
+      const contacto = (params.get('contacto') || params.get('aseg') || 'Conductor').trim();
       const poliza = (params.get('poliza') || '---').trim();
-      const dirRec = (params.get('dir_rec') || '---').trim();
+      const dirRec = (params.get('dir_rec') || params.get('rec_nom') || 'Punto de recogida').trim();
       const pobRec = (params.get('pob_rec') || '').trim();
-      const dirEnt = (params.get('dir_ent') || '---').trim();
+      const dirEnt = (params.get('dir_ent') || params.get('ent_nom') || 'Destino a concretar').trim();
       const pobEnt = (params.get('pob_ent') || '').trim();
-      const coordsRec = (params.get('coords_rec') || '').trim();
-      const coordsEnt = (params.get('coords_ent') || '').trim();
+      const coordsRec = (params.get('coords_rec') || params.get('rec_coord') || '').trim();
+      const coordsEnt = (params.get('coords_ent') || params.get('ent_coord') || '').trim();
       const telRaw = (params.get('tel') || '').trim();
 
-      // Rellenar la interfaz si hay datos en la URL
       if (params.toString() !== "") {
         document.getElementById('val-exp').innerText = 'EXP. ' + expediente;
         document.getElementById('val-poliza').innerText = 'PÓLIZA: ' + poliza;
@@ -213,40 +208,36 @@
         document.getElementById('val-dir-ent').innerText = dirEnt;
         document.getElementById('val-pob-ent').innerText = pobEnt;
 
-        // LLAMADA Y WHATSAPP (CORREGIDO DE RAÍZ)
+        // Llamada telefónica limpia
         const btnLlamar = document.getElementById('btn-llamar');
         const btnWhatsapp = document.getElementById('btn-whatsapp');
 
         if (telRaw) {
-          // Limpiar caracteres no numéricos excepto el '+' inicial si existe
-          const telFormateado = telRaw.replace(/[^\d+]/g, '');
-          btnLlamar.href = 'tel:' + telFormateado;
+          let telDigitos = telRaw.replace(/\D/g, '');
+          let telLlamada = telDigitos;
+          if (telLlamada.startsWith('34') && telLlamada.length === 11) {
+            telLlamada = telLlamada.substring(2);
+          }
+          btnLlamar.href = 'tel:' + telLlamada;
           document.getElementById('txt-btn-llamar').innerText = 'Llamar';
 
-          // Para WhatsApp: SOLO dígitos y con código de país 34 sin duplicar
-          let telDigitos = telRaw.replace(/\D/g, '');
-          if (telDigitos.startsWith('34') && telDigitos.length > 9) {
-            // Ya incluye el prefijo 34
-          } else if (telDigitos.length === 9) {
-            telDigitos = '34' + telDigitos;
-          }
+          let telWa = telDigitos;
+          if (telWa.length === 9) telWa = '34' + telWa;
           const textoWa = encodeURIComponent(`Hola ${contacto}, soy de la grúa. Llego a la dirección en unos minutos.`);
-          btnWhatsapp.href = `https://wa.me/${telDigitos}?text=${textoWa}`;
+          btnWhatsapp.href = `https://wa.me/${telWa}?text=${textoWa}`;
         } else {
-          // Si no hay teléfono registrado en la ficha
           btnLlamar.classList.add('opacity-40', 'pointer-events-none');
           document.getElementById('txt-btn-llamar').innerText = 'Sin tel.';
           btnWhatsapp.classList.add('opacity-40', 'pointer-events-none');
         }
 
-        // NAVEGACIÓN GPS (Murcia / Google Maps)
+        // Navegación GPS
         const queryRec = coordsRec ? coordsRec : `${dirRec}, ${pobRec}`;
         document.getElementById('btn-maps-rec').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryRec)}`;
 
         const queryEnt = coordsEnt ? coordsEnt : `${dirEnt}, ${pobEnt}`;
         document.getElementById('btn-maps-ent').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryEnt)}`;
 
-        // Guardar automáticamente el parte en el historial local si tiene expediente
         if (expediente !== '---') {
           guardarParteEnHistorial({
             expediente,
@@ -263,7 +254,7 @@
         }
       }
 
-      // 2. Control de Cerrojos y Cámara
+      // 2. Control de Cerrojos y Cámara corregido
       const btnRecogida = document.getElementById('btn-foto-recogida');
       const inputCamRecogida = document.getElementById('input-cam-recogida');
       const panelRutaEntrega = document.getElementById('panel-ruta-entrega');
@@ -272,7 +263,13 @@
       const inputCamEntrega = document.getElementById('input-cam-entrega');
       const btnFinalizar = document.getElementById('btn-finalizar');
 
+      let recogidaDesbloqueada = false;
+      let entregaDesbloqueada = false;
+
       function desbloquearRecogida() {
+        if (recogidaDesbloqueada) return;
+        recogidaDesbloqueada = true;
+
         const header = document.getElementById('header-banner');
         header.classList.remove('bg-slate-900', 'border-slate-800');
         header.classList.add('bg-rose-950', 'border-rose-700');
@@ -286,6 +283,7 @@
         btnRecogida.classList.remove('bg-slate-800', 'border-slate-600');
         btnRecogida.classList.add('bg-emerald-700', 'border-emerald-500');
 
+        // Desbloquear panel de ruta y segundo cerrojo
         panelRutaEntrega.classList.remove('opacity-40', 'pointer-events-none');
         panelEntrega.classList.remove('opacity-40', 'pointer-events-none');
 
@@ -293,14 +291,25 @@
       }
 
       if (btnRecogida) {
-        btnRecogida.addEventListener('click', () => {
-          if (inputCamRecogida) inputCamRecogida.click();
+        btnRecogida.addEventListener('click', (e) => {
+          if (!recogidaDesbloqueada) {
+            if (inputCamRecogida) inputCamRecogida.click();
+            // Respaldo de desbloqueo si el móvil bloquea el evento de cámara
+            setTimeout(() => { desbloquearRecogida(); }, 1200);
+          }
+        });
+      }
+
+      if (inputCamRecogida) {
+        inputCamRecogida.addEventListener('change', () => {
           desbloquearRecogida();
         });
       }
-      if (inputCamRecogida) inputCamRecogida.addEventListener('change', desbloquearRecogida);
 
       function desbloquearEntrega() {
+        if (entregaDesbloqueada) return;
+        entregaDesbloqueada = true;
+
         document.getElementById('txt-btn-entrega').innerText = "Descargado ✓";
         btnEntrega.classList.remove('bg-slate-800', 'border-slate-600');
         btnEntrega.classList.add('bg-emerald-700', 'border-emerald-500');
@@ -310,6 +319,7 @@
         header.classList.add('bg-emerald-950', 'border-emerald-700');
         document.getElementById('header-title').innerText = "ENTREGA EN DESTINO";
 
+        // Desbloquear botón final
         btnFinalizar.classList.remove('bg-emerald-600/30', 'text-white/40', 'cursor-not-allowed', 'pointer-events-none');
         btnFinalizar.classList.add('bg-emerald-600', 'text-white', 'cursor-pointer');
         document.getElementById('txt-btn-finalizar').innerText = "FINALIZAR SERVICIO";
@@ -325,13 +335,20 @@
 
       if (btnEntrega) {
         btnEntrega.addEventListener('click', () => {
-          if (inputCamEntrega) inputCamEntrega.click();
+          if (!entregaDesbloqueada) {
+            if (inputCamEntrega) inputCamEntrega.click();
+            setTimeout(() => { desbloquearEntrega(); }, 1200);
+          }
+        });
+      }
+
+      if (inputCamEntrega) {
+        inputCamEntrega.addEventListener('change', () => {
           desbloquearEntrega();
         });
       }
-      if (inputCamEntrega) inputCamEntrega.addEventListener('change', desbloquearEntrega);
 
-      // 3. Envío directo a Google Sheets y guardado final
+      // 3. Envío directo a Google Sheets
       if (btnFinalizar) {
         btnFinalizar.addEventListener('click', () => {
           if (btnFinalizar.disabled || btnFinalizar.classList.contains('pointer-events-none')) return;
@@ -371,7 +388,7 @@
             btnFinalizar.innerHTML = '<i class="fa-solid fa-check-double text-emerald-400 mr-2"></i><span>SERVICIO GUARDADO CON ÉXITO ✓</span>';
             actualizarEstadoParte(expediente, 'Finalizado');
           })
-          .catch((error) => {
+          .catch(() => {
             btnFinalizar.disabled = false;
             btnFinalizar.classList.remove('bg-amber-600', 'cursor-not-allowed', 'opacity-90');
             btnFinalizar.classList.add('bg-rose-600', 'cursor-pointer');
@@ -380,7 +397,7 @@
         });
       }
 
-      // 4. Funciones de Historial Local (localStorage)
+      // 4. Historial Local (localStorage)
       function obtenerHistorial() {
         try {
           return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
@@ -393,12 +410,10 @@
         let lista = obtenerHistorial();
         const index = lista.findIndex(p => p.expediente === nuevoParte.expediente && p.expediente !== '---');
         if (index >= 0) {
-          // Si ya existe, actualizamos los datos sin duplicar
           lista[index] = { ...lista[index], ...nuevoParte };
         } else {
           lista.unshift(nuevoParte);
         }
-        // Guardar hasta 150 registros
         if (lista.length > 150) lista = lista.slice(0, 150);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
         actualizarContadorBadge();
@@ -421,7 +436,7 @@
         if (badge) badge.innerText = `Partes (${lista.length})`;
       }
 
-      // 5. Modal de Historial y Copia de Resumen
+      // 5. Modal Historial
       const modalHistorial = document.getElementById('modal-historial');
       const btnAbrirHistorial = document.getElementById('btn-abrir-historial');
       const btnCerrarHistorial = document.getElementById('btn-cerrar-historial');
@@ -472,7 +487,6 @@
         });
       }
 
-      // Copiar resumen de la semana al portapapeles
       const btnCopiarResumen = document.getElementById('btn-copiar-resumen');
       if (btnCopiarResumen) {
         btnCopiarResumen.addEventListener('click', () => {
@@ -494,7 +508,6 @@
         });
       }
 
-      // Borrar historial si se desea reiniciar semana
       const btnLimpiar = document.getElementById('btn-limpiar-historial');
       if (btnLimpiar) {
         btnLimpiar.addEventListener('click', () => {
